@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:editors="http://java.sun.com/jsf/composite/editors"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+	<ui:composition template="_template.xhtml">
+	
+	<ui:define name="conteudo">
+<h:head>
+	<f:metadata>
+		<f:viewParam name="documentoId"
+			value="#{documentoMB.documentoId}" />
+		<f:viewAction action="#{documentoMB.prepararEditar}" />
+	</f:metadata>
+</h:head>
+<h:body>
+	<b:form id="frm_edit_doc">
+	<p:messages autoUpdate="true"/>
+		<b:formGroup>
+			<b:inputText id="titulo-documento" label="Título"
+				value="#{documentoMB.documentoAtual.titulo}" />
+		</b:formGroup>
+		<b:formGroup>
+			<b:inputText id="codigo_documento" label="Código de Autenticidade"
+				value="#{documentoMB.documentoAtual.codigo}" />
+		</b:formGroup>
+		<b:formGroup>
+			<editors:tinymce id="editor"
+				value="#{documentoMB.documentoAtual.texto}" />
+		</b:formGroup>
+		<b:formGroup rendered="#{not documentoMB.documentoAtual.publicado}">
+			<b:selectBooleanCheckbox id="check_publicado" label="Publicado"
+				value="#{documentoMB.documentoAtual.marcadoParaPublicar}" />
+			<div>
+				Ao salvar o documento com a opção <strong>Publicado</strong> marcada
+				irá publicar o documento para todos os participantes do caso e não
+				serão possíveis novas alteração no documento após a sua publicação.
+			</div>
+		</b:formGroup>
+		<b:formGroup>
+			<b:commandButton id="btnsalvar_documento"
+				action="#{documentoMB.atualiza}" look="primary"
+				icon-awesome="save" value="Salvar">
+				
+				</b:commandButton>
+			<b:button id="btn_voltar_caso" look="danger" value="Voltar"
+				outcome="Caso" icon-awesome="close">
+				<f:param name="casoId"
+					value="#{documentoMB.documentoAtual.caso.casoId}" />
+			</b:button>
+		</b:formGroup>
+	</b:form>
+</h:body>
+</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:timeline="http://java.sun.com/jsf/composite/timeline">
+<ui:composition template="_template.xhtml">
+	<ui:define name="conteudo">
+		<f:metadata>
+			<f:viewAction action="#{ramoMB.listar()}" />
+		</f:metadata>
+		<b:form id="frm_mediadores" prependId="false">
+
+			<b:row>
+				<b:column span="2">
+					<b:iconAwesome name="copy" size="lg"
+						style="top:-3px;position:relative;" />
+					<p:spacer width="5px" />
+					<h:outputText value="Ramos"
+						style="font-size:18pt;font-weight:bold;" />
+				</b:column>
+
+			</b:row>
+
+
+			<p:messages id="msgs" closable="true" autoUpdate="true"
+				severity="error, warn" />
+
+			<b:panel id="listagem" rendered="#{ramoMB.modoListagem}">
+
+				<b:row style="margin-bottom:10px;margin-top:10px;">
+					<b:column>
+						<b:commandButton icon="plus" id="btn_novo_mediador"
+							value="Novo Ramo" update="frm_mediadores" look="success"
+							action="#{ramoMB.novo}" size="md"
+							style="float:right;" />
+					</b:column>
+				</b:row>
+
+
+
+				<b:row>
+					<b:column>
+						<b:dataTable id="tabela_mediadores" info="false"
+							customLangUrl="#{resource['/json/pt-br.json']}" searching="true"
+							value="#{ramoMB.ramos}" var="ramo">
+							<b:dataTableColumn label="Ramo" value="#{ramo.nome}" />
+							<b:dataTableColumn label="Área" value="#{ramo.area.nome}" />
+							<b:dataTableColumn label="Ações">
+								<b:commandButton icon="edit" ajax="true" look="primary" tooltip="Editar"
+									update="frm_mediadores"
+									action="#{ramoMB.editar(ramo.ramoId)}" />
+								<p:spacer />
+								<b:commandButton icon="remove" ajax="true" look="danger" tooltip="Excluir"
+									oncomplete="PF('confirmacaoExclusao').show()" process="@this"
+									update=":frm_mediadores:confirmacaoExclusaoDialog" />
+
+								<p:confirmDialog id="confirmacaoExclusaoDialog"
+									widgetVar="confirmacaoExclusao"
+									message="Tem certeza que deseja excluir  #{ramo.nome}?"
+									header="Exclusão de Ramo" severity="alert">
+
+									<p:button value="Não"
+										onclick="PF('confirmacaoExclusao').hide(); return false;" />
+									<p:commandButton value="Sim" update="frm_mediadores"
+										onclick="PF('confirmacaoExclusao').hide()"
+										action="#{ramoMB.remover(ramo)}" />
+								</p:confirmDialog>
+
+							</b:dataTableColumn>
+						</b:dataTable>
+					</b:column>
+				</b:row>
+
+			</b:panel>
+			<b:panel id="edicao" rendered="#{ramoMB.modoEdicao}">
+			
+			<div class="ui-fluid">
+
+				<b:row>
+					<b:inputText medium-screen="12" label="Nome" value="#{ramoMB.ramo.nome}"></b:inputText>
+
+				</b:row>
+
+
+				<b:row>
+					
+					<b:selectOneMenu id="area" label="Área"
+						medium-screen="12" value="#{ramoMB.ramo.area}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem itemLabel="" />
+						<f:selectItems value="#{ramoMB.areas}"
+							var="area" itemLabel="#{area.nome}"
+							itemValue="#{area}" />
+					</b:selectOneMenu>
+
+					
+
+				</b:row>
+
+				<f:facet name="footer">
+					<b:commandButton update="frm_mediadores" immediate="true"
+						value="Cancelar" action="#{ramoMB.cancelar()}"
+						icon-awesome="ban" id="block" look="danger" />
+					<p:spacer />
+					<b:commandButton value="Salvar" action="#{ramoMB.salvar()}"
+						icon-awesome="save" id="btn_salvar" look="primary" />
+
+				</f:facet>
+				
+				</div>
+			</b:panel>
+		</b:form>
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,84 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="_template.xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="conteudo">
+
+		<h:form id="frm" prependId="false">
+
+
+			<b:row style="margin-left:10px;margin-bottom:10px;margin-top:10px;">
+				<b:column span="12">
+					<b:iconAwesome name="check" size="lg" />
+					<p:spacer width="5px" />
+					<h:outputText value="Confirmação do mediador"
+						style="font-size:18pt;font-weight:bold;" />
+				</b:column>
+
+				<b:column span="12">
+					<h:outputText
+						value="Confirme abaixo os dados do mediador escolhido."
+						style="font-size:12pt;" />
+				</b:column>
+			</b:row>
+
+			<b:panel id="painel_confirmacao">
+
+				<b:row>
+					<b:column span="12">
+						<h:outputText value="Nome"
+							style="font-weight:bold;font-size:11pt;" />
+					</b:column>
+					<b:column span="12">
+						<h:outputText
+							value="#{selecaoMediadorMB.mediadorSelecionado.pessoa.nome}"
+							style="font-size:10pt;" />
+					</b:column>
+					<b:column span="12">
+						<h:outputText value="Especialidade"
+							style="font-weight:bold;font-size:11pt;" />
+					</b:column>
+					<b:column span="12">
+						<h:outputText
+							value="#{selecaoMediadorMB.mediadorSelecionado.especialidade.nome}"
+							style="font-size:10pt;" />
+					</b:column>
+					<b:column span="12">
+						<h:outputText value="Descrição"
+							style="font-weight:bold;font-size:11pt;" />
+					</b:column>
+					<b:column span="12">
+						<h:outputText
+							value="#{selecaoMediadorMB.mediadorSelecionado.descricao}"
+							style="font-size:10pt;" />
+					</b:column>
+					
+
+				</b:row>
+
+			</b:panel>
+
+			<b:row style="margin-left:10px;margin-bottom:10px;margin-top:10px;">
+				<b:column span="12">
+					<b:button icon-awesome="chevron-left" value="Voltar"
+						outcome="SelecionarMediador" look="danger">
+						<f:param name="cid"
+							value="#{javax.enterprise.context.conversation.id}" />
+					</b:button>
+					<p:spacer/>
+
+					<b:commandButton icon-awesome="check" look="primary"
+						value="Confirmar"
+						action="#{selecaoMediadorMB.confirmarEscolhaMediador}"></b:commandButton>
+
+				</b:column>
+			</b:row>
+
+
+
+		</h:form>
+	</ui:define>
+</ui:composition>

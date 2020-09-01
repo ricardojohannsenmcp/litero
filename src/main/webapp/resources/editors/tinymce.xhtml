@@ -1,0 +1,28 @@
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:composite="http://java.sun.com/jsf/composite"> 
+      <composite:interface>
+         <composite:attribute name="value"></composite:attribute>
+      </composite:interface>
+      <composite:implementation>
+      
+      
+      <script type="text/javascript" src="#{request.contextPath}/resources/tinymce/tinymce.min.js"></script>
+      <script type="text/javascript" src="#{request.contextPath}/resources/tinymce/themes/modern/theme.min.js"></script>
+      <script type="text/javascript" src="#{request.contextPath}/resources/editors/tinymce_init.js"></script>
+      
+
+   
+<link type="text/css" rel="stylesheet" 
+		  href="#{request.contextPath}/resources/tinymce/skins/lightgray/skin.min.css" />
+                                       
+            
+      
+      
+      <h:inputTextarea value="#{cc.attrs.value}" rows="25" cols="80" styleClass="tinymce" style="width:800px"/>
+      
+      </composite:implementation>
+
+</ui:component>

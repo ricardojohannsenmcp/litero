@@ -1,0 +1,59 @@
+<h1 style="margin: 0px 0px 10px; padding: 0px; font-weight: 400; line-height: 24px; font-family: DauphinPlain; font-size: 24px;">$empresa&nbsp;</h1>
+<hr />
+<p style="text-align: center;">&nbsp;</p>
+<h2 style="margin: 0px 0px 10px; padding: 0px; font-weight: 400; line-height: 24px; font-family: DauphinPlain; font-size: 24px; text-align: center;">Termo de Acordo<br />$caso.casoId</h2>
+<p style="margin: 0px 0px 15px; padding: 0px; text-align: justify; font-family: 'Open Sans', Arial, sans-serif; font-size: 14px; line-height: 20px;">&nbsp;</p>
+<h1 style="margin: 0px 0px 15px; padding: 0px; text-align: justify; font-family: 'Open Sans', Arial, sans-serif; font-size: 14px; line-height: 20px;"><strong>Objeto:</strong></h1>
+<p style="margin: 0px 0px 15px; padding: 0px; text-align: justify; font-family: 'Open Sans', Arial, sans-serif; font-size: 14px; line-height: 20px;">$caso.descricao </p>
+<p style="margin: 0px 0px 15px; padding: 0px; text-align: justify; font-family: 'Open Sans', Arial, sans-serif; font-size: 14px; line-height: 20px;"><strong style="margin: 0px; padding: 0px;">Proposta:</strong></p>
+<p style="margin: 0px 0px 15px; padding: 0px; text-align: justify; font-family: 'Open Sans', Arial, sans-serif; font-size: 14px; line-height: 20px;">$caso.proposta</p>
+<p style="margin: 0px 0px 15px; padding: 0px; text-align: justify; font-family: 'Open Sans', Arial, sans-serif; font-size: 14px; line-height: 20px;">
+<strong style="margin: 0px; padding: 0px;">Valor:&nbsp;</strong>$numberTool.format("¤ #0.00", $caso.valor.doubleValue, $locale) <br/><br />
+<strong style="margin: 0px; padding: 0px;">Tipo A&ccedil;&atilde;o:&nbsp;</strong><strong style="margin: 0px; padding: 0px;">
+<br /><br />Requerente:<br />
+</strong>
+<p>
+#foreach($requerente in $caso.requerentes)
+<strong>$requerente.parte.nome,</strong>&nbsp; regularmente inscrita no CNPJ sob o n&ordm; $requerente.parte.cpfCnpj,
+estabelecida na $requerente.parte.logradouro,$requerente.parte.numeroLogradouro , $requerente.parte.bairro, $requerente.parte.cidade, $requerente.parte.uf, $requerente.parte.cep, e
+endere&ccedil;o eletr&ocirc;nico $requerente.parte.email .
+#end
+</p>
+Requerido:<br /></strong>
+<p>
+#foreach($requerido in $caso.requeridos)
+<strong>$requerido.parte.nome,</strong>&nbsp; regularmente inscrita no CNPJ sob o n&ordm; $requerido.parte.cpfCnpj,
+estabelecida na $requerido.parte.logradouro,$requerido.parte.numeroLogradouro , $requerido.parte.bairro, $requerido.parte.cidade, $requerido.parte.uf, $requerido.parte.cep, e
+endere&ccedil;o eletr&ocirc;nico $requerido.parte.email .
+#end
+</p>
+<table style="width: 100%;">
+<tbody>
+<tr>
+<td>
+<h3><strong>Requerente(s)</strong></h3>
+</td>
+<td>&nbsp;</td>
+<td>
+<h3>Requerido(s)</h3>
+</td>
+</tr>
+<tr>
+<td>
+#foreach($requerente in $caso.requerentes)
+<br /><br />
+<hr />
+<strong>$requerente.parte.nome&nbsp;</strong>
+#end
+</td>
+<td>&nbsp;</td>
+<td>
+#foreach($requerido in $caso.requeridos)
+<br /><br />
+<hr /><strong>$requerido.parte.nome&nbsp;</strong>
+#end
+</td>
+</tr>
+</tbody>
+</table>
+<p style="margin: 0px 0px 15px; padding: 0px; text-align: justify; font-family: 'Open Sans', Arial, sans-serif; font-size: 14px; line-height: 20px;">&nbsp;</p>

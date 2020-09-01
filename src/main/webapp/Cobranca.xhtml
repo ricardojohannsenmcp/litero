@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<ui:composition template="_template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+
+	<ui:define name="conteudo">
+	
+	<script type="text/javascript">
+	
+	function mascara(o,f){ 
+	v_obj=o 
+	v_fun=f 
+	setTimeout("execmascara()",1) 
+} 
+function execmascara(){ 
+	v_obj.value=v_fun(v_obj.value) 
+} 
+function moeda(v){ 
+	v=v.replace(/\D/g,""); // permite digitar apenas numero 
+	v=v.replace(/(\d{1})(\d{15})$/,"$1.$2") // coloca ponto antes dos ultimos digitos 
+	v=v.replace(/(\d{1})(\d{11})$/,"$1.$2") // coloca ponto antes dos ultimos 11 digitos 
+	v=v.replace(/(\d{1})(\d{8})$/,"$1.$2") // coloca ponto antes dos ultimos 8 digitos 
+	v=v.replace(/(\d{1})(\d{5})$/,"$1.$2") // coloca ponto antes dos ultimos 5 digitos 
+	v=v.replace(/(\d{1})(\d{1,2})$/,"$1,$2") // coloca virgula antes dos ultimos 2 digitos 
+	return v; 
+}
+</script>
+	
+	
+		<f:metadata>
+			<f:viewParam name="casoId" value="#{cobrancaMB.casoId}" />
+			<f:viewParam name="cobrancaId" value="#{cobrancaMB.cobrancaId}" />
+			<f:viewAction action="#{cobrancaMB.setup}" />
+		</f:metadata>
+
+
+		<h:form id="frm_cobranca" prependId="false">
+		
+		
+
+			<b:row>
+				<b:column span="2">
+				</b:column>
+				<b:column span="8">
+
+					<b:row style="margin-bottom:10px;margin-top:10px;">
+						<b:column span="12">
+							<b:iconAwesome name="dollar" size="lg" style="top:-3px;position:relative;" />
+							<p:spacer width="5px" />
+							<h:outputText value="Cobrança"
+								style="font-size:18pt;font-weight:bold;" />
+						</b:column>
+
+					</b:row>
+					
+					
+
+					<b:row style="margin-bottom:20px;margin-top:10px;">
+						<b:column span="2">
+							<h:outputText value="Código: "
+								style="font-weight:bold;font-size:12pt;color:gray;" />
+							<h:outputText value="#{cobrancaMB.casoAtual.casoId}"
+								style="font-weight:bold;font-size:11pt;" />
+						</b:column>
+						<b:column span="10">
+							<h:outputText value="Status: "
+								style="font-weight:bold;font-size:12pt;color:gray;" />
+							<b:label value="#{cobrancaMB.casoAtual.status}"
+								severity="#{cobrancaMB.casoAtual.status.severity}" />
+						</b:column>
+					</b:row>
+					
+					<b:panel>
+					
+					<p:messages id="messages" autoUpdate="true" closable="true" />
+
+					<b:row>
+
+						<b:selectOneMenu label="Parte *" medium-screen="12"
+							value="#{cobrancaMB.cobrancaAtual.pessoa}"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem itemLabel="" />
+							<f:selectItems value="#{cobrancaMB.partes}" var="pessoa"
+								itemLabel="#{pessoa.nome}" itemValue="#{pessoa}" />
+						</b:selectOneMenu>
+
+
+
+
+						<b:datepicker id="data_vencimento" medium-screen="4"
+							label="Data Vencimento"
+							value="#{cobrancaMB.cobrancaAtual.dataVencimento}" />
+
+						<b:datepicker id="data_pagamento" medium-screen="4"
+							label="Data Pagamento"
+							value="#{cobrancaMB.cobrancaAtual.dataPagamento}" />
+							
+							<b:selectOneMenu label="Status" value="#{cobrancaMB.cobrancaAtual.statusCobranca}" converter="omnifaces.SelectItemsConverter" medium-screen="4" >
+								<f:selectItems value="#{cobrancaMB.statusCobranca}" var="statusCobranca"
+									itemLabel="#{statusCobranca.descricao}" itemValue="#{statusCobranca}" />
+							</b:selectOneMenu>
+
+						<!-- <b:inputText id="valor" medium-screen="4" label="Valor *"
+							value="#{cobrancaMB.cobrancaAtual.valorCobranca}" /> -->
+							
+						<b:column span="4">
+							<p:outputLabel for="valor" value="Valor" />
+						</b:column>
+						<b:column span="4">
+							<p:outputLabel for="desconto" value="Desconto" />
+						</b:column>
+						<b:column span="4">
+							<p:outputLabel for="valorRecebido" value="Valor Recebido" />
+						</b:column>
+						
+						<b:column span="4">
+						<p:inputText style="background-color:white;" id="valor" value="#{cobrancaMB.cobrancaAtual.valorCobranca}" onkeydown="mascara(this,moeda)">
+						<f:convertNumber pattern="#,##0.00" />
+						</p:inputText>
+						</b:column>
+						
+						<b:column span="4">
+						<p:inputText style="background-color:white;" id="desconto" value="#{cobrancaMB.cobrancaAtual.valorDesconto}" onkeydown="mascara(this,moeda)">
+						<f:convertNumber pattern="#,##0.00" />
+						</p:inputText>
+						</b:column>
+						
+						<b:column span="4">
+						<p:inputText style="background-color:white;" id="valorRecebido" value="#{cobrancaMB.cobrancaAtual.valorRecebido}" onkeydown="mascara(this,moeda)">
+						<f:convertNumber pattern="#,##0.00" />
+						</p:inputText>
+						</b:column>
+
+						<!-- <b:inputText id="desconto" medium-screen="3" label="Desconto"
+							value="#{cobrancaMB.cobrancaAtual.valorDesconto}" />
+
+						<b:inputText id="valor_recebido" medium-screen="4"
+							label="Valor Recebido"
+							value="#{cobrancaMB.cobrancaAtual.valorRecebido}" /> -->
+
+					</b:row>
+					
+					<p:spacer/>
+
+					<b:row>
+						<b:column span="12">
+							<p:fileUpload update="@none" process="@this"
+								label="Anexar Boleto" multiple="false"
+								fileUploadListener="#{cobrancaMB.uploadBoleto}" auto="true" />
+						</b:column>
+					</b:row>
+					
+					<b:row>
+						
+						<b:column span="12">
+						<h:outputText value="* campos obrigatórios" style="color:gray;font-style:italic;" />
+						
+						</b:column>
+					
+					</b:row>
+
+
+					<f:facet name="footer">
+							<b:button icon-awesome="ban" value="Cancelar" look="danger"
+								outcome="Caso">
+								<f:param name="casoId" value="#{cobrancaMB.casoAtual.casoId}" />
+							</b:button>
+							<p:spacer />
+							<b:commandButton icon-awesome="save" value="Salvar"
+								look="primary" action="#{cobrancaMB.salvar()}" process="@form"
+								update="@form" />
+						</f:facet>
+					
+					</b:panel>
+
+
+				</b:column>
+				<b:column span="2">
+				</b:column>
+
+			</b:row>
+			
+			
+
+		</h:form>
+
+	</ui:define>
+</ui:composition>

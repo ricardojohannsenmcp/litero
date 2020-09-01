@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	 xmlns:b="http://bootsfaces.net/ui">
+
+<h:head />
+<h:body>
+
+	<b:container fluid="true">
+		<h:form id="form" prependId="false">
+		<p:growl id="growl1" autoUpdate="true" severity="info"/>
+    
+		<!--  <p:poll interval="20" listener="#{notificacaoMB.quantidadeDeMensagensNaoLidas}" update="notificacoes" /> -->
+		 <p:remoteCommand name="mostraMensagens" process="@this" update="growl1 notificacoes" action="#{notificacaoMB.mostrarMensagens()}"></p:remoteCommand>
+		
+		
+			<b:row style="padding-bottom:5px;">
+				<b:column span="1">
+					<h:graphicImage library="images" name="cma.png" height="60px" />
+				</b:column>
+				
+				<b:column span="7" style="padding:20px;">
+					
+					<b:button iconAwesome="copy" value="Casos" size="xs" medium-screen="4"
+						outcome="Casos"
+						style="border:0px;font-family:arial; font-size:16px;font-style:normal;font-weight:bold;" />
+
+					
+
+					<b:button iconAwesome="bar-chart" value="Estatísticas" rendered="#{usuarioWeb.administrador}"
+						outcome="Painel" size="xs" medium-screen="4"
+						style="border:0px;font-family:arial; font-size:16px;font-style:normal;font-weight:bold;" />
+						
+						
+				
+				<b:dropMenu value="Administração" medium-screen="4" iconAwesome="cog" size="lg" rendered="#{usuarioWeb.administrador}"
+						style="border:0px;font-family:arial; font-size:16px;font-style:normal;font-weight:bold;">
+						<b:navLink value="Mediadores" outcome="Mediadores"></b:navLink>
+						<b:navLink value="Pessoas" outcome="Pessoas"></b:navLink>
+							<b:navLink value="Usuários" outcome="Usuarios"></b:navLink>
+						<b:navLink></b:navLink>
+						<b:navLink value="Árbitros" outcome="Arbitros"></b:navLink>
+						<b:navLink value="Áreas" outcome="Areas"></b:navLink>
+						<b:navLink value="Ramos" outcome="Ramos"></b:navLink>
+						<b:navLink value="Especialidades" outcome="Especialidades"></b:navLink>
+					</b:dropMenu>
+				
+				
+				</b:column>
+				<b:column span="1">
+				</b:column>
+				<b:column span="3" style="padding:20px;">
+					
+					<b:button id="notificacoes" medium-screen="6"  value="#{usuarioWeb.qtdMensagens}" onclick="mostraMensagens()"  iconAwesome="fas fa-bell" style="border:0px;"/>
+
+					
+
+					<b:dropButton look="primary" medium-screen="6" value="#{casoMB.usuarioWeb.usuario.pessoa.primeiroNome}">
+						<b:navLink icon-awesome="cog" value="Conta" href="#"></b:navLink>
+						<b:navCommandLink icon-awesome="sign-out"  action="#{usuarioWeb.logout}" value="Sair">
+						</b:navCommandLink>
+					</b:dropButton>
+				</b:column>
+			</b:row>
+
+		</h:form>
+
+		<b:row style="background-color:#E8E8E8;padding-bottom:5px;">
+			<b:column>
+				<ui:insert name="conteudo" />
+			</b:column>
+		</b:row>
+
+
+
+
+	</b:container>
+</h:body>
+</html>
+

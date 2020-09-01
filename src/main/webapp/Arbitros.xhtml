@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:timeline="http://java.sun.com/jsf/composite/timeline">
+<ui:composition template="_template.xhtml">
+	<ui:define name="conteudo">
+		<f:metadata>
+			<f:viewAction action="#{arbitroMB.listar()}" />
+		</f:metadata>
+		<b:form id="frm_arbitros" prependId="false">
+			<b:row>
+				<b:column span="2">
+					<b:iconAwesome name="copy" size="lg"
+						style="top:-3px;position:relative;" />
+					<p:spacer width="5px" />
+					<h:outputText value="Árbitros"
+						style="font-size:18pt;font-weight:bold;" />
+				</b:column>
+
+			</b:row>
+
+
+			<p:messages id="msgs" closable="true" autoUpdate="true"
+				severity="error, warn" />
+
+			<b:panel id="listagem" rendered="#{arbitroMB.modoListagem}">
+
+				<b:row style="margin-bottom:10px;margin-top:10px;">
+					<b:column>
+						<b:commandButton icon="plus" id="btn_novo_arbitro"
+							value="Novo Arbitro" update="frm_arbitros" look="success"
+							action="#{arbitroMB.novoArbitro}" size="md" style="float:right;" />
+					</b:column>
+				</b:row>
+
+
+
+				<b:row>
+					<b:column>
+						<b:dataTable id="tabela_arbitros" info="false"
+							customLangUrl="#{resource['/json/pt-br.json']}" searching="true"
+							value="#{arbitroMB.arbitros}" var="arbitro">
+							<b:dataTableColumn value="#{arbitro.pessoa.nome}" />
+							<b:dataTableColumn value="#{arbitro.pessoa.email}" />
+							<b:dataTableColumn label="Ações">
+								<b:commandButton icon="edit" ajax="true" look="primary"
+									tooltip="Editar" update="frm_arbitros"
+									action="#{arbitroMB.editarArbitro(arbitro.arbitroId)}" />
+								<p:spacer />
+								<b:commandButton icon="remove" ajax="true" look="danger"
+									tooltip="Excluir" oncomplete="PF('confirmacaoExclusao').show()"
+									process="@this"
+									update=":frm_arbitros:confirmacaoExclusaoDialog" />
+
+								<p:confirmDialog id="confirmacaoExclusaoDialog"
+									widgetVar="confirmacaoExclusao"
+									message="Tem certeza que deseja excluir o Arbitro #{arbitro.pessoa.nome}?"
+									header="Exclusão de Arbitro" severity="alert">
+
+									<p:button value="Não"
+										onclick="PF('confirmacaoExclusao').hide(); return false;" />
+									<p:commandButton value="Sim" update="frm_arbitros"
+										onclick="PF('confirmacaoExclusao').hide()"
+										action="#{arbitroMB.removerArbitro(arbitro)}" />
+								</p:confirmDialog>
+
+							</b:dataTableColumn>
+						</b:dataTable>
+					</b:column>
+				</b:row>
+
+			</b:panel>
+			<b:panel id="edicao" rendered="#{arbitroMB.modoEdicao}">
+
+				<div class="ui-fluid">
+
+					<b:row>
+						<b:column span="12">
+							<p:outputLabel for="arbitro" value="Pessoa" />
+						</b:column>
+						<b:column span="12">
+							<p:autoComplete id="arbitro" size="100" required="true"
+								placeholder="Nome, CPF ou CNPJ"
+								completeMethod="#{arbitroMB.buscarPartes}"
+								value="#{arbitroMB.arbitro.pessoa}" var="pessoa"
+								itemLabel="#{pessoa.nome}" itemValue="#{pessoa}"
+								forceSelection="true">
+							</p:autoComplete>
+						</b:column>
+					</b:row>
+
+
+					<b:row>
+
+						<b:formGroup>
+							<b:selectBooleanCheckbox medium-screen="12"
+								value="#{arbitroMB.arbitro.convidado}" label="Convidado?" />
+						
+						</b:formGroup>
+						<b:formGroup>
+							<b:inputTextarea label="Descrição"
+								value="#{arbitroMB.arbitro.descricao}" medium-screen="12" />
+						</b:formGroup>
+					</b:row>
+					<b:row>
+				
+				<b:column col-md="6">
+				
+				<p:multiSelectListbox id="msl_especialidades" value="#{arbitroMB.especialidadeSelecionada}" converter="omnifaces.SelectItemsConverter"  effect="slide" header="Áreas" showHeaders="true">
+        <f:selectItems value="#{arbitroMB.categories}" />
+    </p:multiSelectListbox>
+				
+				
+				<b:commandButton look="success" icon-awesome="plus" value="Adicionar Especialidade" action="#{arbitroMB.adicionarEspecialidade()}" update="dt_especialidades" process="msl_especialidades"></b:commandButton>
+				</b:column>
+				<b:column col-md="6">
+				
+				<p:dataTable id="dt_especialidades" value="#{arbitroMB.arbitro.especialidades}" var="especialidade" emptyMessage="">
+				 <f:facet name="header">
+        Especialidades do Árbitro
+    </f:facet>
+		<p:column headerText="Especialidade">
+		#{especialidade.nome}
+		</p:column>
+		<p:column headerText="Ramo">
+		#{especialidade.ramo.nome}
+		</p:column>
+		<p:column headerText="Área">
+		#{especialidade.ramo.area.nome}
+		</p:column>
+		<p:column>
+		<b:commandButton look="danger" icon-awesome="remove" update="dt_especialidades" action="#{arbitroMB.removerEspecialidade(especialidade)}"></b:commandButton>
+		</p:column>
+				</p:dataTable>
+				</b:column>
+				
+				</b:row>
+
+					<b:row>
+
+						<b:column span="12">
+							<h:outputText value="* campos obrigatórios"
+								style="color:gray;font-style:italic;" />
+
+						</b:column>
+
+					</b:row>
+
+					<f:facet name="footer">
+						<b:commandButton update="frm_arbitros" immediate="true"
+							value="Cancelar" action="#{arbitroMB.cancelar()}"
+							icon-awesome="ban" id="block" look="danger" />
+						<p:spacer />
+						<b:commandButton value="Salvar" action="#{arbitroMB.salvar()}"
+							icon-awesome="save" id="btn_salvar" look="primary" />
+
+					</f:facet>
+
+				</div>
+			</b:panel>
+		</b:form>
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+
+
+
+
+<h:head>
+
+
+
+</h:head>
+<h:body>
+
+
+	<h:panelGroup id="container">
+
+
+
+		<b:panel id="painel_escolha"
+			rendered="#{selecaoMediadorMB.telaSelecaoEscolha}">
+			<p>Você pode escolher um mediador dentre uma lista de mediares
+				disponíveis ou deixar a escolha do mediador a cargo da câmara de
+				arbitragem</p>
+			<h:selectOneRadio value="#{selecaoMediadorMB.desejaEscolherMediador}">
+				<f:selectItem itemValue="S"
+					itemLabel="Desejo selecionar um mediador de minha preferência" />
+				<f:selectItem itemValue="N"
+					itemLabel="Deixo a escolha a cargo da câmara" />
+			</h:selectOneRadio>
+			<b:commandButton value="Continuar" look="success" ajax="true"
+				process="@this"
+				action="#{selecaoMediadorMB.irParaSelecaoMediador}"
+				>
+			</b:commandButton>
+		</b:panel>
+
+
+
+
+
+		<b:panel id="painel_lista"
+			rendered="#{selecaoMediadorMB.telaSelecaoMediadores}">
+			<p>Selecione um Mediador do nosso quadro na lista abaixo</p>
+			<br />
+			<b:dataTable value="#{selecaoMediadorMB.mediadorList}" var="mediador"
+				info="false" searching="false" paginated="false">
+				<b:dataTableColumn label="Mediador" value="#{mediador.pessoa.nome}"
+					orderable="false"></b:dataTableColumn>
+				<b:dataTableColumn label="Especialidade"
+					value="#{mediador.especialidade.nome}" orderable="false"></b:dataTableColumn>
+				<b:dataTableColumn label="Ramo"
+					value="#{mediador.especialidade.ramo.nome}" orderable="false"></b:dataTableColumn>
+				<b:dataTableColumn label="" orderable="false">
+					<b:commandButton icon="check" ajax="true" process="@this"
+						action="#{selecaoMediadorMB.selecionarMediador(mediador)}"
+						update="tab_arbitros:container">
+					</b:commandButton>
+				</b:dataTableColumn>
+			</b:dataTable>
+			<p>Você também tem a opção de escolher um árbitro convidado</p>
+			<br />
+			<b:commandButton look="warning" value="Indicar um árbitro convidado"></b:commandButton>
+		</b:panel>
+
+
+
+		<b:panel id="confirma_mediador"
+			rendered="#{selecaoMediadorMB.telaConfirmaMediador}">
+			<h:panelGrid columns="2">
+				<h:outputText value="Mediador" />
+				<h:outputText
+					value="#{selecaoMediadorMB.mediadorSelecionado.pessoa.nome}" />
+				<h:outputText value="Especialidade" />
+				<h:outputText
+					value="#{selecaoMediadorMB.mediadorSelecionado.especialidade.nome}" />
+				<h:outputText value="Descrição" />
+				<h:outputText
+					value="#{selecaoMediadorMB.mediadorSelecionado.descricao}" />
+				<h:panelGroup>
+					<b:commandButton look="primary"
+						action="#{selecaoMediadorMB.confirmarEscolhaMediador}"></b:commandButton>
+				</h:panelGroup>
+			</h:panelGrid>
+		</b:panel>
+
+
+
+	</h:panelGroup>
+
+</h:body>
+</html>

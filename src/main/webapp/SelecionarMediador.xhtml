@@ -1,0 +1,63 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="_template.xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="conteudo">
+
+		<h:form prependId="false" id="frm">
+
+			<b:row style="margin-left:10px;margin-bottom:10px;margin-top:10px;">
+				<b:column span="12">
+					<b:iconAwesome name="check" size="lg" />
+					<p:spacer width="5px" />
+					<h:outputText value="Seleção do mediador"
+						style="font-size:18pt;font-weight:bold;" />
+				</b:column>
+
+				<b:column span="12">
+					<h:outputText
+						value="Escolha na lista abaixo um mediador da câmara ou clique no botão 'Convidar Mediador' para inserir outro mediador." style="font-size:12pt;" />
+				</b:column>
+			</b:row>
+
+			<b:panel id="painel_escolha">
+				<b:dataTable value="#{selecaoMediadorMB.mediadorList}" customLangUrl="#{resource['/json/pt-br.json']}"
+					var="mediador" info="false" searching="false" paginated="false">
+					<b:dataTableColumn label="Mediador" value="#{mediador.pessoa.nome}"
+						orderable="false"></b:dataTableColumn>
+					<b:dataTableColumn label="Especialidade"
+						value="#{mediador.especialidade.nome}" orderable="false"></b:dataTableColumn>
+					<b:dataTableColumn label="Ramo"
+						value="#{mediador.especialidade.ramo.nome}" orderable="false"></b:dataTableColumn>
+					<b:dataTableColumn label="Selecionar" orderable="false">
+						<b:commandButton icon="check" ajax="true" process="@form" tooltip="Selecionar"
+							action="#{selecaoMediadorMB.selecionarMediador(mediador)}"></b:commandButton>
+
+					</b:dataTableColumn>
+				</b:dataTable>
+				<b:row>
+					<b:column span="12">
+						<b:button icon-awesome="user-circle" look="warning"
+							value="Convidar Mediador" outcome="SelecaoMediadorConvidado">
+							<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
+						</b:button>
+					</b:column>
+				</b:row>
+			</b:panel>
+
+			<b:row style="margin-left:10px;margin-bottom:10px;margin-top:10px;">
+				<b:column span="12">
+					<b:button icon-awesome="chevron-left" value="Voltar"
+						outcome="InicioSelecaoMediador" look="danger" >
+						<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
+						</b:button>
+
+				</b:column>
+			</b:row>
+
+		</h:form>
+	</ui:define>
+</ui:composition>

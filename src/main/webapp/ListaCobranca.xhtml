@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+
+<h:head>
+
+</h:head>
+<h:body>
+
+	<b:row>
+		<b:column span="12">
+			<b:button icon-awesome="dollar" look="primary" value="Nova Cobrança" rendered="#{cobrancaMB.usuarioWeb.administrador}"
+				outcome="Cobranca">
+				<f:param name="casoId" value="#{cobrancaMB.casoAtual.casoId}" />
+			</b:button>
+		</b:column>
+		<p:spacer />
+		<b:column span="12">
+			<b:dataTable value="#{cobrancaMB.cobrancaList}" var="cobranca"
+				customLangUrl="#{resource['/json/pt-br.json']}">
+				<b:dataTableColumn label="Código" value="#{cobranca.cobrancaId}" />
+				<b:dataTableColumn label="Pessoa" value="#{cobranca.pessoa.nome}" />
+				<b:dataTableColumn label="Total" value="#{cobranca.total}" />
+				<b:dataTableColumn label="Situacao"
+					value="#{cobranca.statusCobranca.descricao}" />
+				<b:dataTableColumn label="Boleto">
+					<h:commandLink value="#{cobranca.boleto}">
+						<p:fileDownload
+							value="#{fileDownloadMB.download(cobranca.boleto)}" />
+					</h:commandLink>
+				</b:dataTableColumn>
+				
+				<b:dataTableColumn label="Ações" rendered="#{cobrancaMB.usuarioWeb.administrador}">
+					<b:link outcome="Cobranca" icon="edit" tooltip="Editar" value="Editar">
+						<f:param name="cobrancaId" value="#{cobranca.cobrancaId}" />
+					</b:link>
+				</b:dataTableColumn>
+			</b:dataTable>
+		</b:column>
+	</b:row>
+
+
+
+
+
+</h:body>
+</html>

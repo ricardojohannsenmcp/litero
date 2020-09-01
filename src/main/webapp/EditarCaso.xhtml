@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+<ui:composition template="_template.xhtml">
+	<ui:define name="conteudo">
+
+		<script type="text/javascript">
+	
+	function mascara(o,f){ 
+	v_obj=o 
+	v_fun=f 
+	setTimeout("execmascara()",1) 
+} 
+function execmascara(){ 
+	v_obj.value=v_fun(v_obj.value) 
+} 
+function moeda(v){ 
+	v=v.replace(/\D/g,""); // permite digitar apenas numero 
+	v=v.replace(/(\d{1})(\d{15})$/,"$1.$2") // coloca ponto antes dos ultimos digitos 
+	v=v.replace(/(\d{1})(\d{11})$/,"$1.$2") // coloca ponto antes dos ultimos 11 digitos 
+	v=v.replace(/(\d{1})(\d{8})$/,"$1.$2") // coloca ponto antes dos ultimos 8 digitos 
+	v=v.replace(/(\d{1})(\d{5})$/,"$1.$2") // coloca ponto antes dos ultimos 5 digitos 
+	v=v.replace(/(\d{1})(\d{1,2})$/,"$1,$2") // coloca virgula antes dos ultimos 2 digitos 
+	return v; 
+}
+</script>
+
+		<h:head>
+			<f:metadata>
+				<f:viewParam name="casoId" value="#{editarCasoMB.casoId}" />
+				<f:viewAction action="#{editarCasoMB.exibir()}" />
+			</f:metadata>
+		</h:head>
+		<h:body>
+
+			<h:form id="frm_caso" prependId="false">
+				<b:panel id="panel_view_caso">
+					<b:panel rendered="#{editarCasoMB.viewCaso}">
+
+
+
+						<p:messages autoUpdate="true" closable="true" />
+
+						<p:growl autoUpdate="true" />
+
+
+						<b:row>
+							<b:column span="2">
+							</b:column>
+							<b:column span="8">
+
+								<b:row style="margin-bottom:10px;margin-top:10px;">
+									<b:column span="12">
+										<b:iconAwesome name="file" size="lg"
+											style="top:-3px;position:relative;" />
+										<p:spacer width="5px" />
+										<h:outputText value="Caso"
+											style="font-size:18pt;font-weight:bold;" />
+									</b:column>
+
+								</b:row>
+
+								<b:row style="margin-bottom:20px;margin-top:10px;"
+									rendered="#{editarCasoMB.caso.casoId != null}">
+									<b:column span="2">
+										<h:outputText value="Código: "
+											style="font-weight:bold;font-size:12pt;color:gray;" />
+										<h:outputText value="#{editarCasoMB.caso.casoId}"
+											style="font-weight:bold;font-size:11pt;" />
+									</b:column>
+									<b:column span="10">
+										<h:outputText value="Status: "
+											style="font-weight:bold;font-size:12pt;color:gray;" />
+										<b:label value="#{editarCasoMB.caso.status.descricao}"
+											severity="#{editarCasoMB.caso.status.severity}" />
+									</b:column>
+								</b:row>
+
+								<p:messages id="mensagens" closable="true" />
+
+								<b:row>
+									<b:inputTextarea label="Conte-nos seu problema" id="descricao"
+										medium-screen="12" value="#{editarCasoMB.caso.descricao}" />
+									<b:inputTextarea label="Proposta" id="proposta"
+										medium-screen="12" value="#{editarCasoMB.caso.proposta}" />
+									<!-- <b:inputText label="Valor objeto da demanda" id="valor"
+										medium-screen="12" value="#{editarCasoMB.caso.valor}" /> -->
+
+									<b:column span="12">
+										<p:outputLabel for="valor" value="Valor objeto da demanda" />
+									</b:column>
+									<b:column span="12">
+
+										<p:inputText id="valor" value="#{editarCasoMB.caso.valor}"
+											onkeydown="mascara(this,moeda)">
+											<f:convertNumber pattern="#,##0.00" />
+										</p:inputText>
+									</b:column>
+
+									<b:column span="12">
+										<h:outputText value="* campos obrigatórios"
+											style="color:gray;font-style:italic;" />
+
+									</b:column>
+								</b:row>
+								<b:row>
+
+									<h3>Mediador:</h3>
+
+									<b:row>
+										<b:selectOneMenu id="cb_mediador"
+											disabled="#{not editarCasoMB.permiteSelecionarMediador}"
+											label="Selecione o mediador" medium-screen="7"
+											value="#{editarCasoMB.caso.mediador}"
+											converter="omnifaces.SelectItemsConverter">
+											<f:selectItem itemLabel="" />
+											<f:selectItems value="#{editarCasoMB.mediadorList}"
+												var="mediador" itemLabel="#{mediador.pessoa.nome}"
+												itemValue="#{mediador}" />
+										</b:selectOneMenu>
+
+									</b:row>
+									
+								</b:row>
+
+								<h3>REQUERENTES:</h3>
+								
+
+
+								<b:formGroup id="group_requerentes">
+									<p:autoComplete id="ac_requerentes" size="45"
+										placeholder="Nome, CPF ou CNPJ"
+										completeMethod="#{editarCasoMB.buscarPartes}"
+										value="#{editarCasoMB.pessoaSelecionada}"
+										var="parteSelecionada" itemLabel="#{parteSelecionada.nome}"
+										itemValue="#{parteSelecionada}" forceSelection="true">
+										<p:ajax event="itemSelect"
+											listener="#{editarCasoMB.adicionarParte}"
+											update="dt_requerentes ac_requerentes" />
+									</p:autoComplete>
+									<p:spacer />
+									<b:commandButton icon-awesome="plus" look="success"
+										process="@this" update="panel_view_caso panel_view_parte"
+										action="#{editarCasoMB.novaParteRequerente}" />
+								</b:formGroup>
+								<b:dataTable id="dt_requerentes"
+									value="#{editarCasoMB.caso.requerentes}"
+									customLangUrl="#{resource['/json/pt-br.json']}"
+									style="background-color:#FFFFFF" var="requerente" info="false"
+									striped="false" paginated="false" searching="false">
+									<b:dataTableColumn value="#{requerente.pessoa.nome}"
+										header-style-class="hidden" style="width:600px;" />
+									<b:dataTableColumn label="Principal"
+										header-style-class="hidden" style="width:600px;">
+										<b:selectBooleanCheckbox value="#{requerente.principal}"
+											label="Principal" update="@form"
+											onclick="ajax:editarCasoMB.alterarRequerentePrincipal(requerente)">
+										</b:selectBooleanCheckbox>
+									</b:dataTableColumn>
+									<b:dataTableColumn header-style-class="hidden">
+										<b:commandButton icon-awesome="remove" size="xs" look="danger"
+											ajax="true" process="@this"
+											action="#{editarCasoMB.removerParte(requerente)}" />
+									</b:dataTableColumn>
+								</b:dataTable>
+
+								<h3>REQUERIDOS:</h3>
+
+								<b:formGroup id="group_requeridos">
+									<p:autoComplete id="ac_requeridos" size="45"
+										placeholder="Nome, CPF ou CNPJ"
+										completeMethod="#{editarCasoMB.buscarPartes}"
+										value="#{editarCasoMB.pessoaSelecionada}"
+										var="parteSelecionada" itemLabel="#{parteSelecionada.nome}"
+										itemValue="#{parteSelecionada}" forceSelection="true">
+										<p:ajax event="itemSelect"
+											listener="#{editarCasoMB.adicionarParteContraria}"
+											update="dt_requeridos ac_requeridos" />
+									</p:autoComplete>
+									<p:spacer />
+									<b:commandButton icon-awesome="plus" look="success"
+										process="@this" update="panel_view_caso panel_view_parte"
+										action="#{editarCasoMB.novaParteRequerido()}" />
+								</b:formGroup>
+								<b:dataTable id="dt_requeridos"
+									value="#{editarCasoMB.caso.requeridos}"
+									customLangUrl="#{resource['/json/pt-br.json']}"
+									style="background-color:#FFFFFF" var="requerido" info="false"
+									striped="false" paginated="false" searching="false">
+									<b:dataTableColumn value="#{requerido.pessoa.nome}"
+										header-style-class="hidden" style="width:600px;" />
+
+									<b:dataTableColumn label="Principal"
+										header-style-class="hidden" style="width:600px;">
+										<b:selectBooleanCheckbox value="#{requerido.principal}"
+											label="Principal" update="@form"
+											onclick="ajax:editarCasoMB.alterarRequeridoPrincipal(requerido)">
+										</b:selectBooleanCheckbox>
+									</b:dataTableColumn>
+									<b:dataTableColumn header-style-class="hidden">
+										<b:commandButton icon-awesome="remove" ajax="true" size="xs"
+											look="danger" process="@this" tooltip="Excluir"
+											action="#{editarCasoMB.removerParteContraria(requerido)}" />
+									</b:dataTableColumn>
+								</b:dataTable>
+
+								<b:formGroup id="group_acoes">
+									<b:button icon-awesome="ban" value="Cancelar"
+										rendered="#{editarCasoMB.caso.casoId != null}" outcome="Caso"
+										look="danger">
+										<f:param name="casoId" value="#{editarCasoMB.caso.casoId}" />
+									</b:button>
+									<b:button icon-awesome="ban"
+										rendered="#{editarCasoMB.caso.casoId == null}"
+										value="Cancelar" outcome="Casos" look="danger" />
+									<p:spacer />
+									<b:commandButton id="btn_salvar" icon-awesome="save"
+										process="@form" rendered="#{usuarioWeb.administrador}"
+										value="Salvar" action="#{editarCasoMB.salvarCaso()}"
+										look="primary" />
+
+								</b:formGroup>
+
+							</b:column>
+							<b:column span="2">
+							</b:column>
+						</b:row>
+
+					</b:panel>
+				</b:panel>
+				
+				<b:panel id="panel_view_parte">
+
+					<b:panel rendered="#{editarCasoMB.viewParte}">
+						<b:row>
+
+							<b:column span="2" style="padding:20px;">
+								<b:iconAwesome name="id-card" size="lg"
+									style="top:-3px;position:relative;" />
+								<p:spacer width="5px" />
+								<h:outputText value="Cadastro"
+									style="font-size:18pt;font-weight:bold;" />
+							</b:column>
+						</b:row>
+
+						<p:messages id="messages" autoUpdate="true" />
+
+						<b:formGroup>
+							<b:inputText id="nome" medium-screen="12" label="Nome"
+								value="#{editarCasoMB.pessoaSelecionada.nome}" />
+						</b:formGroup>
+						<b:formGroup>
+							<b:selectOneMenu id="tipo_pessoa" process="@this"
+								update="cpf_cnpj" label="Tipo" medium-screen="6"
+								value="#{editarCasoMB.pessoaSelecionada.tipoPessoa}"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItems value="#{cadastroMB.tiposPessoa}"
+									var="tipoPessoa" itemLabel="#{tipoPessoa.descricao}"
+									itemValue="#{tipoPessoa}" />
+							</b:selectOneMenu>
+							<b:inputText id="cpf_cnpj"
+								validator-message="informe um valor válido"
+								label="#{editarCasoMB.pessoaSelecionada.rotuloCpfCnpj}"
+								medium-screen="6"
+								value="#{editarCasoMB.pessoaSelecionada.cpfCnpj}">
+								<f:attribute name="tipo"
+									value="#{editarCasoMB.pessoaSelecionada.tipoPessoa.descricao}" />
+							</b:inputText>
+						</b:formGroup>
+						<b:formGroup>
+							<b:inputText id="email" medium-screen="6" label="Email"
+								value="#{editarCasoMB.pessoaSelecionada.email}" />
+							<b:inputText id="telefone" medium-screen="6" label="Telefone"
+								value="#{editarCasoMB.pessoaSelecionada.telefone}" />
+						</b:formGroup>
+						<b:formGroup>
+							<b:inputText id="registro" medium-screen="4"
+								label="Registro Civil / profissional"
+								value="#{editarCasoMB.pessoaSelecionada.registro}" />
+							<b:inputText id="orgao" medium-screen="4" label="Orgão Emissor"
+								value="#{editarCasoMB.pessoaSelecionada.orgaoEmissor}" />
+							<b:datepicker lang="pt_BR" id="data_emissao" medium-screen="4"
+								label="Data Emissão"
+								value="#{editarCasoMB.pessoaSelecionada.dataEmissao}" />
+
+						</b:formGroup>
+						<b:formGroup>
+							<b:selectOneMenu id="estado_civil" label="Estado Civil"
+								medium-screen="6"
+								value="#{editarCasoMB.pessoaSelecionada.estadoCivil}"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItem itemLabel="" />
+								<f:selectItems value="#{cadastroMB.estadosCivis}"
+									var="estadoCivil" itemLabel="#{estadoCivil.descricao}"
+									itemValue="#{estadoCivil}" />
+							</b:selectOneMenu>
+							<b:datepicker lang="pt_BR" id="data_nascimento" medium-screen="6"
+								label="Data Nascimento"
+								value="#{editarCasoMB.pessoaSelecionada.dataNascimento}" />
+						</b:formGroup>
+						<b:formGroup>
+							<b:inputText medium-screen="6" label="Nacionalidade"
+								value="#{editarCasoMB.pessoaSelecionada.profissao}" />
+							<b:inputText id="profissao" medium-screen="6" label="Profissão"
+								value="#{editarCasoMB.pessoaSelecionada.profissao}" />
+						</b:formGroup>
+						<b:formGroup id="frm_group_endereco">
+							<b:formGroup>
+								<b:inputText id="cep" label="Cep" medium-screen="3"
+									value="#{editarCasoMB.pessoaSelecionada.cep}">
+									<f:facet name="append">
+										<b:commandButton look="primary" ajax="true" process="@parent"
+											update="frm_group_endereco"
+											action="#{editarCasoMB.buscarCep}" iconAwesome="search"
+											icon-align="right" />
+									</f:facet>
+								</b:inputText>
+								<b:inputText id="logradouro" medium-screen="6"
+									label="Logradouro"
+									value="#{editarCasoMB.pessoaSelecionada.logradouro}" />
+								<b:inputText id="numero" medium-screen="3" label="Número"
+									value="#{editarCasoMB.pessoaSelecionada.numeroLogradouro}" />
+							</b:formGroup>
+							<b:formGroup>
+								<b:inputText id="complemento" medium-screen="3"
+									label="Complemento"
+									value="#{editarCasoMB.pessoaSelecionada.complemento}" />
+								<b:inputText id="bairro" medium-screen="3" label="Bairro"
+									value="#{editarCasoMB.pessoaSelecionada.bairro}" />
+								<b:inputText id="uf" medium-screen="2" label="UF"
+									value="#{editarCasoMB.pessoaSelecionada.uf}" />
+								<b:inputText id="cidade" medium-screen="4" label="Cidade"
+									value="#{editarCasoMB.pessoaSelecionada.cidade}" />
+							</b:formGroup>
+						</b:formGroup>
+						
+						<b:row>
+
+							<b:column span="12">
+								<h:outputText value="* campos obrigatórios"
+									style="color:gray;font-style:italic;" />
+
+							</b:column>
+
+						</b:row>
+
+						<p:separator style="height:10px; border-color:#E8E8E8;" />
+
+						<div class="form-group" align="center">
+							<b:commandButton value="Cancelar" icon-awesome="ban"
+								process="@this" action="#{editarCasoMB.voltarViewCaso()}"
+								update="panel_view_caso panel_view_parte" look="danger" />
+							<p:spacer style="width:5px" />
+							<b:commandButton look="primary" icon-awesome="save"
+								process="panel_view_parte"
+								update="panel_view_caso panel_view_parte" value="Salvar"
+								action="#{editarCasoMB.salvarPessoa}" />
+						</div>
+
+					</b:panel>
+				</b:panel>
+
+			</h:form>
+		</h:body>
+	</ui:define>
+</ui:composition>
+</html>

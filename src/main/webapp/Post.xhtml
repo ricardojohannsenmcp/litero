@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<ui:composition template="_template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+	<ui:define name="conteudo">
+		<f:metadata>
+			<f:viewParam name="casoId" value="#{postagemMB.casoId}" />
+			<f:viewParam name="postId" value="#{postagemMB.postId}" />
+			<f:viewAction action="#{postagemMB.load}" />
+		</f:metadata>
+		<h:form id="frm_post" prependId="false">
+
+			<b:row>
+				<b:column span="2">
+				</b:column>
+				<b:column span="8">
+
+					<b:row style="margin-bottom:10px;margin-top:10px;">
+						<b:column span="12">
+							<b:iconAwesome name="comments" size="lg" />
+							<p:spacer width="5px" />
+							<h:outputText value="Nova Postagem"
+								style="font-size:18pt;font-weight:bold;" />
+						</b:column>
+
+					</b:row>
+
+					<b:row style="margin-bottom:20px;margin-top:10px;">
+						<b:column span="2">
+							<h:outputText value="Código: "
+								style="font-weight:bold;font-size:12pt;color:gray;" />
+							<h:outputText value="#{postagemMB.casoAtual.casoId}"
+								style="font-weight:bold;font-size:11pt;" />
+						</b:column>
+						<b:column span="10">
+							<h:outputText value="Status: "
+								style="font-weight:bold;font-size:12pt;color:gray;" />
+							<b:label value="#{postagemMB.casoAtual.status}"
+								severity="#{postagemMB.casoAtual.status.severity}" />
+						</b:column>
+					</b:row>
+					
+					<p:messages id="messages" autoUpdate="true" closable="true" />
+
+					<b:row>
+						<b:column span="12">
+							<p:editor value="#{postagemMB.postagemAtual.texto}" />
+						</b:column>
+					</b:row>
+
+
+
+					<b:row>
+						<b:column span="12">
+							<p:fileUpload update="anexos" label="Anexar" multiple="false"
+								fileUploadListener="#{postagemMB.uploadAnexos}" auto="true" />
+						</b:column>
+					</b:row>
+
+					<b:row>
+
+						<b:column span="12">
+							<b:dataTable id="anexos"
+								value="#{postagemMB.postagemAtual.anexos}" var="anexo"
+								info="false" paginated="false" searching="false"
+								customLangUrl="#{resource['/json/pt-br.json']}">
+								<b:dataTableColumn label="Arquivo" value="#{anexo.nome}"
+									orderable="false" />
+								<b:dataTableColumn label="" orderable="false">
+									<b:commandButton look="danger" icon="remove" process="@this"
+										action="#{postagemMB.removerAnexo(anexo)}" update="@form" />
+								</b:dataTableColumn>
+							</b:dataTable>
+
+						</b:column>
+
+					</b:row>
+
+					<b:row>
+						<b:column span="12">
+							<b:button icon-awesome="ban" value="Cancelar" look="danger"
+								outcome="Caso">
+								<f:param name="casoId" value="#{postagemMB.casoAtual.casoId}" />
+							</b:button>
+							<p:spacer />
+							<b:commandButton icon-awesome="save" value="Salvar"
+								look="primary" action="#{postagemMB.salvar}" ajax="true"
+								process="frm_post" />
+						</b:column>
+					</b:row>
+
+				</b:column>
+				<b:column span="2">
+				</b:column>
+
+			</b:row>
+
+
+		</h:form>
+	</ui:define>
+</ui:composition>

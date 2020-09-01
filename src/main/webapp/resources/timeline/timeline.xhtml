@@ -1,0 +1,59 @@
+<ui:component xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui"
+	xmlns:composite="http://java.sun.com/jsf/composite">
+	<composite:interface>
+		<composite:attribute name="value"></composite:attribute>
+	</composite:interface>
+	<composite:implementation>
+		<h:outputStylesheet library="timeline" name="timeline.css" />
+		<b:panel style="border:none" id="#{cc.clientId}">
+
+			<ul class="timeline">
+				<ui:repeat value="#{cc.attrs.value}" var="evento">
+					
+					<li class="timeline-inverted">
+						<div class="timeline-badge #{evento.tipoEvento.color}">
+							<i class="#{evento.tipoEvento.icon}"></i>
+						</div>
+						<div class="timeline-panel">
+							<div class="timeline-heading">
+								<h:outputText value="#{evento.tipoEvento.descricao}"
+									style="font-size:18pt;" />
+								<b:row>
+									
+										<b:column span="12">
+											<b:iconAwesome name="user" style="color:gray;" />
+											<p:spacer width="3px"/>
+											<h:outputText value="#{evento.usuario.pessoa.nome}" 
+											style="font-size:12pt;color:gray;" />
+										</b:column>
+									
+								</b:row>
+								<b:row>
+									<b:column>
+										<small class="text-muted"><i
+										class="glyphicon glyphicon-time"></i>
+										<p:spacer width="3px"/>
+										 <h:outputText
+											value="#{evento.data}">
+											<f:convertDateTime pattern="dd/MM/yyyy" />
+										</h:outputText> </small>
+									</b:column>
+								</b:row>
+
+							</div>
+							<div class="timeline-body">
+								<h:outputText value="#{evento.descricao}" 
+											style="font-size:10pt;" />
+							
+							</div>
+						</div>
+					</li>
+				</ui:repeat>
+			</ul>
+		</b:panel>
+	</composite:implementation>
+</ui:component>

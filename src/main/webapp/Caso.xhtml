@@ -1,0 +1,913 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui"
+	xmlns:o="http://omnifaces.org/ui" xmlns:jsf="http://xmlns.jcp.org/jsf"
+	xmlns:timeline="http://java.sun.com/jsf/composite/timeline">
+
+<ui:composition template="_template.xhtml">
+
+	<ui:define name="conteudo">
+		<h:head>
+			<f:metadata>
+				<f:viewParam name="casoId" value="#{casoMB.casoId}" />
+				<f:viewAction action="#{casoMB.exibir()}" />
+				<f:viewAction action="#{postagemMB.init()}" />
+				<f:viewAction action="#{documentoMB.init()}" />
+				<f:viewAction action="#{cobrancaMB.init()}" />
+				<f:viewAction action="#{confirmacaoParteMB.init()}" />
+				<f:viewAction action="#{confirmacaoMediadorMB.init()}" />
+
+			</f:metadata>
+
+
+			<style type="text/css">
+.balao {
+	display: block;
+	background-color: #39c;
+	border-top: 7px solid #39c;
+	border-left: 7px solid transparent;
+	background-clip: padding-box;
+	padding: 0 3px 3px 3px;
+	width: 100%;
+	border-radius: 5px;
+	font: Arial 10pt;
+	color: #FFFFFF;
+	font-align: justify;
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+
+.balao2 {
+	display: block;
+	background-color: #FF8C69;
+	border-top: 7px solid #FF8C69;
+	border-right: 7px solid transparent;
+	background-clip: padding-box;
+	padding: 0 3px 3px 3px;
+	width: 100%;
+	border-radius: 5px;
+	font: Arial 10pt;
+	color: #FFFFFF;
+	font-align: justify;
+	margin-top: 2px;
+	margin-bottom: 2px;
+}
+</style>
+
+
+			<script type="text/javascript">
+
+var canal = new WebSocket("ws://localhost:8080#{request.contextPath}/chat/#{casoMB.caso.casoId}");
+canal.onmessage=  function(message){
+
+
+	
+	var msg = JSON.parse(message.data);
+
+
+	switch(msg.type){
+
+	case 'MENSSAGEM':
+
+         atualizarChat(msg);
+         break;
+
+	case 'ANEXO':  
+		atualizarAnexos(msg);
+		break;
+
+	case 'PROPOSTA':
+		atualizarPropostas();
+		break;
+
+	case 'CASO':
+		atualizarCaso();
+		break;
+
+		defalt:
+
+			break;  
+		
+	}
+
+
+	
+
+function atualizarChat(msg){
+
+
+	var texto = '<div  class="row">' + 
+	'<div class="col-md-7">' + 
+	'<span style="color:gray;font-size:9pt;font-weight:bold;">'+msg.usuario+'</span>' + 
+	'</div>' + 
+	'<div class="col-md-5">' + 
+	'<span>' + 
+	'<i class="fa fa-clock-o" style="color:lightgray;"></i>' + 
+	'</span>' + 
+	'<span style="color:lightgray;font-size:9pt;">'+msg.data+'</span>' + 
+	'</div>' + 
+	'</div><div class="balao">'+msg.texto+'</div><br/>';
+	
+	 var chatContent = $('#chatPanel');
+     chatContent.append(texto);
+     $("#divMsg").animate({ scrollTop: 1000 }, 3000);
+     chatContent.scrollTop(chatContent.height());
+	}
+
+
+
+
+       function atualizarAnexos(msg){
+
+
+
+    	  var textMessage = '<a style="color:#FFFFFF"  href="http://localhost:8080#{request.contextPath}/file/'+msg.anexo+'" target="_blank"><i class="fa fa-paperclip"></i>'+msg.texto+'</a>';
+
+
+    	  var texto = '<div  class="row">' + 
+    		'<div class="col-md-7">' + 
+    		'<span style="color:gray;font-size:9pt;font-weight:bold;">'+msg.usuario+'</span>' + 
+    		'</div>' + 
+    		'<div class="col-md-5">' + 
+    		'<span>' + 
+    		'<i class="fa fa-clock-o" style="color:lightgray;"></i>' + 
+    		'</span>' + 
+    		'<span style="color:lightgray;font-size:9pt;">'+msg.data+'</span>' + 
+    		'</div>' + 
+    		'</div><div class="balao">'+textMessage+'</div><br/>';
+    		
+    		 var chatContent = $('#chatPanel');
+    	     chatContent.append(texto);
+    	     $("#divMsg").animate({ scrollTop: 1000 }, 3000);
+    	     chatContent.scrollTop(chatContent.height());
+
+    	     recarregarAnexos();
+
+           }
+
+
+
+function atualizarPropostas(){
+
+
+	recarregarPropostas();
+	
+}
+
+
+function atualizarCaso(){
+
+
+
+	recarregarCaso();
+}
+
+
+	
+	
+}
+
+</script>
+
+
+		</h:head>
+		<h:body>
+			<h:form id="formCaso" prependId="false" enctype="multipart/form-data">
+				<p:messages id="mensagens" autoUpdate="true" closable="true" />
+
+
+
+
+
+				<p:remoteCommand name="recarregarCaso"
+					action="#{casoMB.recarregarCaso()}" process="@this" />
+
+				<b:row style="margin-bottom:20px;margin-top:10px;">
+					<b:column span="2">
+						<h:outputText value="Código: "
+							style="font-weight:bold;font-size:12pt;color:gray;" />
+						<h:outputText value="#{casoMB.caso.casoId}"
+							style="font-weight:bold;font-size:11pt;" />
+					</b:column>
+					<b:column span="10">
+						<h:outputText value="Status: "
+							style="font-weight:bold;font-size:12pt;color:gray;" />
+						<b:label value="#{casoMB.caso.status.descricao}" id="label_status"
+							severity="#{casoMB.caso.status.severity}" />
+					</b:column>
+
+				</b:row>
+
+
+
+
+				<b:row style="margin:5px;" rendered="#{confirmacaoMediadorMB.exibe}">
+
+					<b:panel icon-awesome="user" title="Confirmação do Mediador"
+						collapsible="false">
+						
+						
+
+						<b:column span="12">
+
+							<h:outputText
+								value="Aceita o mediador escolhido pelo requerente?"
+								style="font-size:12pt;" />
+
+						</b:column>
+						<b:column span="12">
+						
+						<b:panel id="painel_confirmacao">
+
+				<b:row>
+					<b:column span="12">
+						<h:outputText value="Nome"
+							style="font-weight:bold;font-size:11pt;" />
+					</b:column>
+					<b:column span="12">
+						<h:outputText
+							value="#{confirmacaoMediadorMB.casoAtual.mediadorCaso.mediador.pessoa.nome}"
+							style="font-size:10pt;" />
+					</b:column>
+					<b:column span="12">
+						<h:outputText value="Especialidade"
+							style="font-weight:bold;font-size:11pt;" />
+					</b:column>
+					<b:column span="12">
+						<h:outputText
+							value="#{confirmacaoMediadorMB.casoAtual.mediadorCaso.mediador.especialidade.nome}"
+							style="font-size:10pt;" />
+					</b:column>
+					<b:column span="12">
+						<h:outputText value="Descrição"
+							style="font-weight:bold;font-size:11pt;" />
+					</b:column>
+					<b:column span="12">
+						<h:outputText
+							value="#{confirmacaoMediadorMB.casoAtual.mediadorCaso.mediador.descricao}"
+							style="font-size:10pt;" />
+					</b:column>
+					
+
+				</b:row>
+
+			</b:panel>
+			
+			</b:column>
+
+						<b:column span="12">
+							<b:commandButton icon-awesome="check" value="Aceitar Mediador"
+								look="success" action="#{confirmacaoMediadorMB.aceitar}" />
+							<p:spacer />
+							<b:commandButton icon-awesome="times-circle"
+								value="Negar Mediador" look="danger"
+								action="#{confirmacaoMediadorMB.negar}" />
+						</b:column>
+						
+						
+
+					</b:panel>
+				</b:row>
+
+
+				<b:row style="margin:5px;"
+					rendered="#{escolhaMediadorCamaraMB.exibe}">
+
+					<b:panel icon-awesome="user" title="Definição do mediador"
+						collapsible="false">
+
+						<b:column span="12">
+
+							<h:outputText value="Defina o mediador do caso:"
+								style="font-size:12pt;" />
+
+						</b:column>
+
+
+						<b:column span="12">
+							<b:selectOneMenu value="#{escolhaMediadorCamaraMB.mediador}"
+								converter="omnifaces.SelectItemsConverter">
+								<f:selectItems value="#{escolhaMediadorCamaraMB.mediadores}"
+									var="mediador" itemLabel="#{mediador.pessoa.nome}"
+									itemValue="#{mediador}" />
+							</b:selectOneMenu>
+						</b:column>
+
+
+						<b:column span="12">
+							<b:commandButton icon-awesome="check" value="Definir Mediador"
+								look="primary" action="#{escolhaMediadorCamaraMB.salvar()}"></b:commandButton>
+						</b:column>
+					</b:panel>
+				</b:row>
+
+
+
+
+
+
+
+
+
+				<b:row style="margin:5px;"
+					rendered="#{confirmacaoParteMB.exibirConvite}">
+					<b:panel icon-awesome="user" title="Participação no caso"
+						collapsible="false">
+
+						<b:column span="12">
+
+							<h:outputText value="Deseja participar do caso?"
+								style="font-size:12pt;" />
+
+						</b:column>
+						<b:column span="12">
+							<b:commandButton icon-awesome="check" value="Confirmar Participação" look="success"
+								action="#{confirmacaoParteMB.aceitar}" />
+								<p:spacer/>
+							<b:commandButton icon-awesome="times-circle" value="Negar Participação" look="danger"
+								action="#{confirmacaoParteMB.negar}" />
+						</b:column>
+						</b:panel>
+				</b:row>
+
+
+
+
+
+
+				<b:row style="margin-bottom:5px;margin-top:5px;" id="group_botoes">
+					<b:column>
+
+						<b:commandButton size="xs" icon-awesome="user"
+							rendered="#{casoMB.caso.aguardandoDefinicaoMediador and casoMB.requerentePrincipal}"
+							value="Definir Mediador" action="#{selecaoMediadorMB.init}"
+							look="warning">
+							<f:setPropertyActionListener value="#{casoMB.caso}"
+								target="#{selecaoMediadorMB.casoAtual}" />
+						</b:commandButton>
+
+
+						<p:spacer />
+
+
+						<b:commandButton size="xs" icon-awesome="check"
+							rendered="#{casoMB.caso.emAnalise and usuarioWeb.administrador}"
+							value="Aceitar caso" ajax="true" look="success"
+							oncomplete="PF('confirmacaoExclusao').show()" process="@this"
+							update=":formCaso:confirmacaoExclusaoDialog" />
+
+						<p:confirmDialog id="confirmacaoExclusaoDialog"
+							widgetVar="confirmacaoExclusao"
+							message="Tem certeza que deseja aceitar o caso ##{casoMB.caso.casoId}?"
+							header="Aceitar Caso" severity="alert">
+
+							<p:button value="Não"
+								onclick="PF('confirmacaoExclusao').hide(); return false;" />
+							<p:commandButton process="@this" value="Sim" update="formCaso"
+								onclick="PF('confirmacaoExclusao').hide()"
+								action="#{casoMB.aceitarCaso()}" />
+						</p:confirmDialog>
+
+
+						<p:spacer />
+
+
+						<b:commandButton size="xs" icon-awesome="close" value="Negar caso"
+							rendered="#{casoMB.caso.emAnalise and usuarioWeb.administrador}"
+							ajax="true" process="@this" update="@none" look="danger"
+							action="#{casoMB.prepararNegarCaso()}" />
+
+
+
+
+						<b:commandButton size="xs" icon-awesome="phone-square"
+							rendered="#{casoMB.caso.processoComunicacao and usuarioWeb.administrador}"
+							value="Comunicar Requeridos" look="warning" ajax="true"
+							process="@this" update="@none"
+							action="#{casoMB.prepararComunicarRequeridos}" />
+
+
+						<p:spacer />
+
+						<b:commandButton size="xs" icon-awesome="phone-square"
+							rendered="#{casoMB.caso.casoAceito and usuarioWeb.administrador}"
+							value="Processo de Comunicação" look="primary" ajax="true"
+							process="@this" update="@none"
+							action="#{casoMB.processoDeComunicacao()}" />
+
+
+						<p:spacer />
+						<b:commandButton size="xs" icon-awesome="window-close"
+							rendered="#{casoMB.caso.iniciado and usuarioWeb.administrador}"
+							value="Finalizar caso" ajax="true" update="@none" process="@this"
+							action="#{casoMB.prepararFinalizarCaso()}" look="danger" />
+
+
+
+						<b:commandButton size="xs" icon-awesome="power-off"
+							rendered="#{casoMB.caso.tramitando and usuarioWeb.mediador}"
+							value="#{chatMB.online ? 'Desativar Chat' : 'Ativar Chat'}"
+							ajax="true" update="@this" process="@this"
+							action="#{chatMB.ligaDesligaChat}"
+							look="#{chatMB.online ? 'danger' : 'success'}" />
+
+
+					</b:column>
+				</b:row>
+				<b:row>
+					<b:column span="8" id="tab_container">
+						<b:tabView pills="true" id="tabview_casos"
+							contentStyle="border-right: 1px solid #ddd;border-left: 1px solid #ddd;border-bottom: 1px solid #ddd;padding:10px;background-color:white;">
+
+
+							<b:tab title="Informações" id="tab_info"
+								style="font-family: Arial; font-size:11pt;">
+								<f:facet name="anchor">
+									<b:iconAwesome name="info" spin="false" />
+								</f:facet>
+
+
+								<h:panelGrid id="grid_info" columns="1" style="width: 100%">
+
+									<b:row id="group_botoes_info">
+
+
+
+										<b:column col-xs="12" col-md="12">
+											<b:button size="xs" icon="glyphicon glyphicon-edit"
+												rendered="#{casoMB.usuarioWeb.administrador}" value="Editar"
+												look="primary" style="float:right;" outcome="EditarCaso">
+												<f:param name="casoId" value="#{casoMB.caso.casoId}" />
+											</b:button>
+										</b:column>
+
+									</b:row>
+
+
+
+									<h:outputText value="Objeto"
+										style="font-weight:bold;font-size:11pt;" />
+
+									<h:outputText value="#{casoMB.caso.descricao}"
+										style="font-size:10pt;" />
+
+
+									<h:outputText value="Proposta"
+										style="font-weight:bold;font-size:11pt;" />
+									<h:outputText value="#{casoMB.caso.proposta}"
+										style="font-size:10pt;" />
+
+									<h:outputText value="Valor"
+										style="font-weight:bold;font-size:11pt;" />
+									<h:outputText value="R$ #{casoMB.caso.valor}"
+										style="font-size:10pt;" />
+
+									<h:outputText value="Data"
+										style="font-weight:bold;font-size:11pt;" />
+									<h:outputText value="#{casoMB.caso.data}"
+										style="font-size:10pt;">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+
+									<h:outputText value="Mediador"
+										style="font-weight:bold;font-size:11pt;" />
+
+									<h:outputText
+										value="#{casoMB.caso.mediadorDefinido ? casoMB.caso.mediador.pessoa.nome : 'Não definido'}"
+										style="font-size:10pt;" />
+
+									<p:spacer />
+
+									<b:row>
+										<b:column medium-screen="12">
+											<p:outputLabel
+												style="font-size:12pt;font-weight:bold;color:#347AB6"
+												value="Requerentes" />
+
+										</b:column>
+									</b:row>
+
+									<p:separator style="margin:2px;" />
+
+									<b:dataTable value="#{casoMB.caso.requerentes}" var="parte"
+										customLangUrl="#{resource['/json/pt-br.json']}" info="false"
+										paginated="false" searching="false" style="width:100%;"
+										border="none">
+
+										<b:dataTableColumn style="width:50%"
+											header-style-class="hidden">
+											<h:panelGrid columns="1">
+												<h:outputText value="#{parte.pessoa.nome}"
+													style="font-weight:bold;" />
+
+												<h:outputText value="#{parte.pessoa.email}" />
+
+												<h:outputText value="Telefone: #{parte.pessoa.telefone}" />
+
+												<h:outputText
+													value="#{parte.pessoa.rotuloCpfCnpj}: #{parte.pessoa.cpfCnpj}" />
+
+
+											</h:panelGrid>
+
+										</b:dataTableColumn>
+										<b:dataTableColumn header-style-class="hidden">
+											<h:panelGrid columns="1">
+												<b:row>
+													<b:iconAwesome name="map-marker" />
+													<p:spacer width="3px" />
+													<h:outputText value="Endereço" style="font-weight:bold;" />
+												</b:row>
+
+												<h:outputText
+													value="#{parte.pessoa.logradouro}, #{parte.pessoa.numeroLogradouro}, #{parte.pessoa.bairro}" />
+												<h:outputText
+													value="#{parte.pessoa.cidade} - #{parte.pessoa.uf}" />
+												<h:outputText value="CEP: #{parte.pessoa.cep}" />
+
+											</h:panelGrid>
+
+										</b:dataTableColumn>
+									</b:dataTable>
+
+									<p:spacer />
+
+									<b:row>
+										<b:column medium-screen="12">
+											<p:outputLabel
+												style="font-size:12pt;font-weight:bold;color:#347AB6"
+												value="Requeridos" />
+										</b:column>
+									</b:row>
+
+									<p:separator style="margin:2px;" />
+
+									<b:dataTable value="#{casoMB.caso.requeridos}" var="parte"
+										customLangUrl="#{resource['/json/pt-br.json']}" info="false"
+										paginated="false" searching="false" style="width:100%;"
+										border="none">
+										<b:dataTableColumn style="width:50%"
+											header-style-class="hidden">
+											<h:panelGrid columns="1">
+												<h:outputText value="#{parte.pessoa.nome}"
+													style="font-weight:bold;" />
+
+												<h:outputText value="#{parte.pessoa.email}" />
+
+												<h:outputText value="Telefone: #{parte.pessoa.telefone}" />
+
+												<h:outputText
+													value="#{parte.pessoa.rotuloCpfCnpj}: #{parte.pessoa.cpfCnpj}" />
+
+
+											</h:panelGrid>
+
+										</b:dataTableColumn>
+										<b:dataTableColumn header-style-class="hidden">
+											<h:panelGrid columns="1">
+												<b:row>
+													<b:iconAwesome name="map-marker" />
+													<p:spacer width="3px" />
+													<h:outputText value="Endereço" style="font-weight:bold;" />
+												</b:row>
+
+												<h:outputText
+													value="#{parte.pessoa.logradouro}, #{parte.pessoa.numeroLogradouro}, #{parte.pessoa.bairro}" />
+												<h:outputText
+													value="#{parte.pessoa.cidade} - #{parte.pessoa.uf}" />
+												<h:outputText value="CEP: #{parte.pessoa.cep}" />
+
+											</h:panelGrid>
+
+										</b:dataTableColumn>
+
+									</b:dataTable>
+								</h:panelGrid>
+
+							</b:tab>
+
+
+
+							<b:tab title="Lista de Discussão" id="tab_propostas"
+								rendered="#{casoMB.caso.tramitando or casoMB.caso.encerrado or casoMB.usuarioWeb.mediador}"
+								style="font-family: Arial; font-size:11pt;">
+								<f:facet name="anchor">
+									<b:iconAwesome name="handshake-o" spin="false" />
+								</f:facet>
+								<h:panelGroup id="panel_forum">
+
+									<b:row>
+										<b:column span="12">
+											<b:button icon-awesome="envelope" value="Nova Mensagem"
+												rendered="#{casoMB.caso.tramitando or casoMB.usuarioWeb.mediador}"
+												look="primary" outcome="Post">
+												<f:param name="casoId" value="#{casoMB.caso.casoId}" />
+											</b:button>
+										</b:column>
+										<b:column span="12">
+											<b:dataTable id="posts" var="post"
+												customLangUrl="#{resource['/json/pt-br.json']}"
+												value="#{postagemMB.postagemList}" info="false"
+												searching="false" paginated="false">
+												<b:dataTableColumn label="Autor" orderable="false">
+													<h:panelGrid columns="1">
+														<h:outputText value="#{post.autor.nome}" />
+														<h:outputText value="#{post.data}">
+															<f:convertDateTime pattern="dd/MM/yyyy" />
+														</h:outputText>
+														<h:outputText rendered="#{post.dataAprovacao == null}"
+															value="Aguardado Moderação" style="color:red" />
+													</h:panelGrid>
+												</b:dataTableColumn>
+												<b:dataTableColumn label="Mensagem" orderable="false">
+													<h:outputText value="#{post.texto}" escape="false" />
+													<h:panelGroup>
+
+														<ul>
+															<ui:repeat var="anexo" value="#{post.anexos}">
+																<li><h:commandLink value="#{anexo.caminho}">
+																		<p:fileDownload
+																			value="#{fileDownloadMB.download(anexo.caminho)}" />
+																	</h:commandLink></li>
+															</ui:repeat>
+														</ul>
+
+													</h:panelGroup>
+
+
+												</b:dataTableColumn>
+												<b:dataTableColumn orderable="false" label="Ações">
+													<b:commandButton disabled="#{post.aprovado}" look="primary"
+														icon="check" ajax="true" process="@this"
+														action="#{postagemMB.aprovar}">
+														<f:setPropertyActionListener value="#{post}"
+															target="#{postagemMB.postagemAtual}" />
+													</b:commandButton>
+
+												</b:dataTableColumn>
+											</b:dataTable>
+										</b:column>
+
+									</b:row>
+
+								</h:panelGroup>
+							</b:tab>
+							<b:tab title="Arquivos" id="tab_arquivos"
+								rendered="#{casoMB.caso.tramitando or casoMB.caso.encerrado}"
+								style="font-family: Arial; font-size:11pt;">
+								<f:facet name="anchor">
+									<b:iconAwesome name="upload" spin="false" />
+								</f:facet>
+								<ui:include src="/Documentos.xhtml" />
+							</b:tab>
+							<b:tab id="tab_cobrancas" title="Cobranças"
+								rendered="#{!casoMB.caso.emAnalise or usuarioWeb.administrador}"
+								style="font-family: Arial; font-size:11pt;">
+								<f:facet name="anchor">
+									<b:iconAwesome name="usd" spin="false" />
+								</f:facet>
+								<ui:include src="/ListaCobranca.xhtml" />
+							</b:tab>
+							<b:tab title="Andamentos" id="tab_andamentos"
+								style="font-family: Arial; font-size:11pt;">
+								<f:facet name="anchor">
+									<b:iconAwesome name="tasks" spin="false" />
+								</f:facet>
+								<b:panel id="eventos">
+									<timeline:timeline value="#{casoMB.caso.eventosOrdenados}" />
+								</b:panel>
+							</b:tab>
+
+
+						</b:tabView>
+					</b:column>
+					<b:column span="4">
+
+						<b:panel collapsible="false" id="painel_mensagens">
+							<f:facet name="heading">
+								<i class="fa fa-comments-o" style="padding-right: 20px" />
+								<h:outputLabel value="Mensagens " />
+								<b:label
+									tooltip="#{chatMB.online ? 'Chat online' : 'chat offline'}"
+									style="margin-left:10px; border-radius:10px;"
+									severity="#{chatMB.online ? 'success' : 'danger'}" value="chat" />
+							</f:facet>
+
+							<div id="divMsg"
+								style="overflow-y: auto; overflow-x: hidden; height: 300px; width: 100%;">
+								<ui:repeat var="mensagem" value="#{chatMB.mensagemList}">
+									<b:row>
+										<b:column span="7">
+											<h:outputText value="#{mensagem.pessoa.nome}"
+												style="color:gray;font-size:9pt;font-weight:bold;" />
+										</b:column>
+										<b:column span="5">
+											<b:iconAwesome name="clock-o" style="color:lightgray;" />
+											<h:outputText value="#{mensagem.data}"
+												style="color:lightgray;font-size:9pt;">
+												<f:convertDateTime pattern="dd/MM/yyyy HH:mm:ss" />
+											</h:outputText>
+										</b:column>
+									</b:row>
+									<div
+										class="#{mensagem.getCorMensagem(usuarioWeb.usuario.pessoa.pessoaId)}">
+
+										<h:outputText value="#{mensagem.texto}" escape="false"
+											rendered="#{mensagem.anexo == null}" />
+
+										<h:panelGroup rendered="#{mensagem.anexo !=  null}">
+
+											<a style="color: #FFFFFF"
+												href="/camara/file/#{mensagem.anexo}" target="_blank"><i
+												class="fa fa-paperclip"></i>#{mensagem.texto}</a>
+
+										</h:panelGroup>
+
+									</div>
+									<br />
+
+								</ui:repeat>
+
+								<p:outputPanel id="chatPanel" layout="block"
+									style="border:none;"
+									styleClass="ui-corner-all ui-widget-content chatPanel" />
+							</div>
+
+							<p:separator />
+
+							<b:container fluid="true">
+								<b:row>
+									<b:column medium-screen="9">
+									<!-- disabled="#{chatMB.online ? 'false' : 'true'}" -->
+										<b:inputTextarea placeholder="Digite sua mensagem..." id="msg"
+											
+											value="#{chatMB.textMessage}" styleClass="message" />
+									</b:column>
+									<b:column medium-screen="3">
+									<!-- disabled="#{chatMB.online ? 'false' : 'true'}" -->
+										<b:commandButton size="" value="enviar" ajax="true"
+											
+											action="#{chatMB.enviar}" update="msg" icon="send"
+											look="success" />
+									</b:column>
+								</b:row>
+								<b:row id="row_upload" style="visibility:hidden">
+								<!-- disabled="#{chatMB.online ? 'false' : 'true'}" -->
+									<b:column medium-screen="12">
+										<h:inputFile id="anexo" value="#{chatMB.arquivo}"
+											
+											style="margin-bottom:30px">
+											<f:ajax listener="#{chatMB.enviarDocumento}" />
+										</h:inputFile>
+									</b:column>
+								</b:row>
+								<b:row>
+									<b:column medium-screen="12">
+									<!-- disabled="#{chatMB.online ? 'false' : 'true'}" -->
+										<b:commandButton icon-awesome="plus-square" ajax="true"
+											style-class="btn btn-link" action="#{casoMB.exibirUpload}"
+											process="@this" value="Adicionar anexo"
+											>
+										</b:commandButton>
+									</b:column>
+								</b:row>
+								<b:row>
+									<b:column medium-screen="12">
+									<!-- disabled="#{chatMB.online ? 'false' : 'true'}" -->
+
+										<b:commandButton icon-awesome="video-camera" ajax="true"
+											onclick="this.form.target='_self';"
+											style-class="btn btn-link"
+											action="#{chatMB.iniciarConferencia()}" process="@this"
+											value="Iniciar Conferência"
+											>
+										</b:commandButton>
+
+										<!-- <h:commandLink immediate="true" icon="video-camera"
+											target="_blank" actionListener="#{chatMB.iniciarConferencia}"
+											value=" Iniciar conferência" styleClass="fa fa-video-camera"
+											rendered="#{casoMB.caso.iniciado and not usuarioWeb.administrador}">
+										</h:commandLink> -->
+									</b:column>
+								</b:row>
+							</b:container>
+						</b:panel>
+
+					</b:column>
+
+				</b:row>
+
+
+				<p:dialog id="win_negar_caso" header="Negar Caso"
+					widgetVar="dialogNegarCaso" modal="true" width="400" height="500">
+
+					<b:panel id="painel_justificativa">
+
+						<b:inputTextarea label="Justificativa"
+							value="#{casoMB.caso.comentario}" />
+						<b:commandButton styleClass="btn btn-danger" value="Negar"
+							action="#{casoMB.negarCaso}">
+
+						</b:commandButton>
+					</b:panel>
+
+				</p:dialog>
+
+
+
+
+
+
+
+
+			</h:form>
+
+
+
+
+			<p:dialog id="win_finalizar_caso" header="Finalizar Caso"
+				widgetVar="dialogFinalizarCaso" modal="true" width="400"
+				height="500">
+				<h:form prependId="false">
+					<b:panel id="painel_finalizacao">
+
+						<h:outputText value="Motivo da Finalização"
+							style="font-weight:bold;" />
+
+						<b:selectOneMenu id="select_motivo_finalizacao"
+							value="#{casoMB.caso.motivoFinalizacaoAux}"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItem itemLabel="" />
+							<f:selectItems value="#{casoMB.motivosFinalizacao}" var="motivo"
+								itemLabel="#{motivo.descricao}" itemValue="#{motivo}" />
+						</b:selectOneMenu>
+
+						<b:inputTextarea label="Comentários"
+							value="#{casoMB.caso.comentario}" />
+						<b:commandButton action="#{casoMB.finalizarCaso}"
+							value="Finalizar Caso" icon-awesome="window-close" look="danger" />
+					</b:panel>
+				</h:form>
+			</p:dialog>
+
+
+
+
+
+
+
+			<p:dialog id="dg_documentos" header="Documentos" widgetVar="dialog"
+				modal="true" width="400" height="500">
+				<h:form id="frm_select_doc" prependId="false">
+					<b:dataTable value="#{documentoMB.tipoDocumentoList}"
+						emptyMessage="Nenhum registro encontrado" var="tipoDocumento"
+						info="false" responsive="true" striped="false" paginated="false"
+						searching="false">
+						<b:dataTableColumn header-style-class='hidden' style="width:300px"
+							value="#{tipoDocumento.nome}" />
+						<b:dataTableColumn header-style-class='hidden'>
+							<b:commandButton icon-awesome="check"
+								action="#{documentoMB.adiciona}">
+								<f:setPropertyActionListener value="#{tipoDocumento}"
+									target="#{documentoMB.tipoDocumentoSelecionado}" />
+							</b:commandButton>
+						</b:dataTableColumn>
+					</b:dataTable>
+				</h:form>
+			</p:dialog>
+
+			<p:dialog id="dlg_comunicacao" header="Notificar Requeridos"
+				widgetVar="dlgCom" modal="true" width="400" height="500">
+				<h:form id="frm_comunicacao">
+
+					<b:panel id="painel_comunicacao">
+
+						<h:selectManyCheckbox value="#{comunicarRequeridosMB.requeridos}"
+							converter="omnifaces.SelectItemsConverter">
+							<f:selectItems value="#{casoMB.caso.requeridos}" var="requerido"
+								itemLabel="#{requerido.pessoa.nome}" itemValue="#{requerido}" />
+
+						</h:selectManyCheckbox>
+
+						<b:commandButton icon-awesome="send" look="primary"
+							value="Enviar Convite" process="@form" update="@none"
+							action="#{comunicarRequeridosMB.enviarConvite}"
+							oncomplete="PF('dlgCom').hide();"></b:commandButton>
+
+					</b:panel>
+				</h:form>
+			</p:dialog>
+
+
+
+
+
+
+		</h:body>
+	</ui:define>
+</ui:composition>
+
+</html>

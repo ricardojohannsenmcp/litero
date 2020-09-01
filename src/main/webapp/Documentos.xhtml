@@ -1,0 +1,32 @@
+<!DOCTYPE html> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+       xmlns:b="http://bootsfaces.net/ui"
+       xmlns:p="http://primefaces.org/ui">
+       
+       
+
+        
+<h:head>
+</h:head> 
+<h:body> 
+    <b:button icon="file" id="btn_novo_documento" value="Novo Documento" look="primary" onclick="PF('dialog').show();" rendered="#{casoMB.usuarioWeb.administrador or casoMB.usuarioWeb.mediador}"/>
+    <b:dataTable id="dt_documentos" value="#{documentoMB.documentoList}" emptyMessage="Nenhum registro encontrado" var="documento" customLangUrl="#{resource['/json/pt-br.json']}"  
+    info="false"  responsive="true"
+    striped="false"
+      paginated="false" 
+      searching="false">
+    <b:dataTableColumn value="#{documento.nome}"  header-style-class='hidden'  style="width:600px" />
+     <b:dataTableColumn header-style-class='hidden' >
+      <b:button  icon="edit" outcome="EditarDocumento" id="bt-#{documento.documentoId}">
+      <f:param name="documentoId" value="#{documento.documentoId}">
+      </f:param>
+      </b:button>
+    </b:dataTableColumn>
+   </b:dataTable>
+
+</h:body> 
+
+</html>

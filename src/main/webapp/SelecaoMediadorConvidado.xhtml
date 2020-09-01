@@ -1,0 +1,98 @@
+
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="_template.xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="conteudo">
+
+		<b:form id="frm_partes" prependId="false">
+
+			<b:row style="margin-left:10px;margin-bottom:10px;margin-top:10px;">
+				<b:column span="12">
+					<b:iconAwesome name="check" size="lg" />
+					<p:spacer width="5px" />
+					<h:outputText value="Seleção do mediador"
+						style="font-size:18pt;font-weight:bold;" />
+				</b:column>
+
+				<b:column span="12">
+					<h:outputText
+						value="Busque a pessoa por nome ou cpf, se ela não estiver cadastrada você pode cadastrar clicando no botão '+'."
+						style="font-size:11pt;" />
+				</b:column>
+
+				<b:column span="12">
+					<h:outputText
+						value="É importante salientar que o mediador convidado pode aceitar participar do caso ou não e está sujeito ao aceite 
+					da parte contrária. Caso o mediador convidado não aceite participar do caso ou a parte contrária não aceite o mediador 
+					convidado, o mesmo será definido pela CMA."
+						style="font-size:10pt;color:red;" />
+				</b:column>
+				
+			</b:row>
+			
+			
+				
+				<b:panel id="painel_escolha">
+				
+				<b:row>
+
+				<b:column span="12">
+					<p:messages id="mensagens" autoUpdate="true" closable="true" />
+					<b:formGroup id="pesquisa">
+						
+							<h:outputText value="Mediador Convidado:" />
+							<p:spacer width="5px"/>
+							<p:autoComplete id="complete_parte" size="45"
+								placeholder="Nome ou CPF"
+								completeMethod="#{selecaoMediadorMB.buscarPartes}"
+								value="#{selecaoMediadorMB.convidado}" var="convidado"
+								itemLabel="#{convidado.nome}"
+								itemValue="#{convidado}" forceSelection="true">
+								<p:ajax event="itemSelect" listener="#{selecaoMediadorMB.selecionarMediador}"
+									update="painel pesquisa" />
+							</p:autoComplete>
+							<p:spacer width="5px"/>
+							<b:commandButton icon-awesome="plus" look="success"
+								action="#{selecaoMediadorMB.novoConvidado}" />
+						
+					</b:formGroup>
+					<b:formGroup id="painel">
+						
+						<!-- <b:dataTable id="rpt_partes" value="#{wizardMB.requerentes}" customLangUrl="#{resource['/json/pt-br.json']}"
+							style="background-color:#FFFFFF" var="requerente" info="false"
+							striped="false" paginated="false" searching="false">
+							<b:dataTableColumn value="#{requerente.nome}"
+								header-style-class="hidden" style="width:600px;" />
+							<b:dataTableColumn header-style-class="hidden">
+								<b:commandButton icon-awesome="remove" size="xs" look="danger"
+									action="#{wizardMB.removerParte(requerente)}" />
+							</b:dataTableColumn>
+						</b:dataTable>-->
+						
+						#{selecaoMediadorMB.mediadorSelecionado.pessoa.nome}
+						
+					</b:formGroup>
+				</b:column>
+				
+							</b:row>
+				</b:panel>
+
+			
+			<b:row style="margin-left:10px;margin-bottom:10px;margin-top:10px;">
+				<b:column span="12">
+					<b:button icon-awesome="chevron-left" value="Voltar"
+						outcome="SelecionarMediador" look="danger" >
+						<f:param name="cid" value="#{javax.enterprise.context.conversation.id}" />
+						</b:button>
+						<p:spacer/>
+						<b:commandButton icon-awesome="send" look="success" value="Enviar Convite" action="#{selecaoMediadorMB.enviarConviteAoMediador}"></b:commandButton>
+
+				</b:column>
+			</b:row>
+
+		</b:form>
+	</ui:define>
+</ui:composition>

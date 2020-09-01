@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+
+<h:head>
+</h:head>
+<h:body>
+	<ui:composition template="_template.xhtml">
+
+		<ui:define name="conteudo">
+			<b:form id="frm_parte" prependId="false">
+			
+			<b:row>
+
+				<b:column span="2" style="padding:20px;">
+					<b:iconAwesome name="id-card" size="lg"
+						style="top:-3px;position:relative;" />
+					<p:spacer width="5px" />
+					<h:outputText value="Cadastro"
+						style="font-size:18pt;font-weight:bold;" />
+				</b:column>
+			</b:row>
+			
+				<p:messages id="messages" autoUpdate="true" />
+
+				<b:formGroup>
+					<b:inputText id="nome" medium-screen="12" label="Nome"
+						value="#{wizardMB.parteSelecionada.nome}" />
+				</b:formGroup>
+				<b:formGroup>
+					<b:selectOneMenu id="tipo_pessoa" process="@this" update="cpf_cnpj"
+						label="Tipo" medium-screen="6"
+						value="#{wizardMB.parteSelecionada.tipoPessoa}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItems value="#{cadastroMB.tiposPessoa}" var="tipoPessoa"
+							itemLabel="#{tipoPessoa.descricao}" itemValue="#{tipoPessoa}" />
+					</b:selectOneMenu>
+					<b:inputText id="cpf_cnpj" validator-message="informe um valor válido"
+						label="#{wizardMB.parteSelecionada.rotuloCpfCnpj}"
+						medium-screen="6" value="#{wizardMB.parteSelecionada.cpfCnpj}">
+						<f:attribute name="tipo"
+							value="#{wizardMB.parteSelecionada.tipoPessoa.descricao}" />
+					</b:inputText>
+				</b:formGroup>
+				<b:formGroup>
+					<b:inputText id="email" medium-screen="6" label="Email"
+						value="#{wizardMB.parteSelecionada.email}" />
+					<b:inputText id="telefone" medium-screen="6" label="Telefone"
+						value="#{wizardMB.parteSelecionada.telefone}" />
+				</b:formGroup>
+				<b:formGroup>
+					<b:inputText id="registro" medium-screen="4" label="Registro Civil / profissional"
+						value="#{wizardMB.parteSelecionada.registro}" />
+					<b:inputText id="orgao" medium-screen="4" label="Orgão Emissor"
+						value="#{wizardMB.parteSelecionada.orgaoEmissor}" />
+					<b:datepicker lang="pt_BR" id="data_emissao" medium-screen="4"
+						label="Data Emissão"
+						value="#{wizardMB.parteSelecionada.dataEmissao}" />
+						
+				</b:formGroup>
+				<b:formGroup>
+					<b:selectOneMenu id="estado_civil" label="Estado Civil"
+						medium-screen="6" value="#{wizardMB.parteSelecionada.estadoCivil}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItem itemLabel=""/>
+						<f:selectItems value="#{cadastroMB.estadosCivis}"
+							var="estadoCivil" itemLabel="#{estadoCivil.descricao}"
+							itemValue="#{estadoCivil}" />
+					</b:selectOneMenu>
+					<b:datepicker lang="pt_BR" id="data_nascimento" medium-screen="6"
+						label="Data Nascimento"
+						value="#{wizardMB.parteSelecionada.dataNascimento}" />
+				</b:formGroup>
+				<b:formGroup>
+					<b:inputText medium-screen="6" label="Nacionalidade"
+						value="#{wizardMB.parteSelecionada.profissao}" />
+					<b:inputText id="profissao" medium-screen="6" label="Profissão"
+						value="#{wizardMB.parteSelecionada.profissao}" />
+				</b:formGroup>
+				<b:formGroup id="frm_group_endereco">
+					<b:formGroup>
+						<b:inputText id="cep" label="Cep" medium-screen="3"
+							value="#{wizardMB.parteSelecionada.cep}">
+							<f:facet name="append">
+								<b:commandButton look="primary" ajax="true" process="@parent"
+									update="frm_group_endereco" action="#{wizardMB.buscarCep}"
+									iconAwesome="search" icon-align="right" />
+							</f:facet>
+						</b:inputText>
+						<b:inputText id="logradouro" medium-screen="6" label="Logradouro"
+							value="#{wizardMB.parteSelecionada.logradouro}" />
+						<b:inputText id="numero" medium-screen="3" label="Número"
+							value="#{wizardMB.parteSelecionada.numeroLogradouro}" />
+					</b:formGroup>
+					<b:formGroup>
+						<b:inputText id="complemento" medium-screen="3"
+							label="Complemento"
+							value="#{wizardMB.parteSelecionada.complemento}" />
+						<b:inputText id="bairro" medium-screen="3" label="Bairro"
+							value="#{wizardMB.parteSelecionada.bairro}" />
+						<b:inputText id="uf" medium-screen="2" label="UF"
+							value="#{wizardMB.parteSelecionada.uf}" />
+						<b:inputText id="cidade" medium-screen="4" label="Cidade"
+							value="#{wizardMB.parteSelecionada.cidade}" />
+					</b:formGroup>
+				</b:formGroup>
+				
+				
+
+			<b:row>
+
+				<b:column span="12">
+					<h:outputText value="* campos obrigatórios"
+						style="color:gray;font-style:italic;" />
+
+				</b:column>
+
+			</b:row>
+				
+				<p:separator  style="height:10px; border-color:#E8E8E8;"/>
+				<div class="form-group" align="center">
+					<b:commandButton value="Cancelar" icon-awesome="ban"
+						action="#{wizardMB.cancelarAcao}" immediate="true" look="danger" />
+						<p:spacer style="width:5px"/>
+					<b:commandButton look="primary" icon-awesome="save"
+						value="Salvar" action="#{wizardMB.salvarParte}" />
+					</div>
+						
+			</b:form>
+			
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+</html>

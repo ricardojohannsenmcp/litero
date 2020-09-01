@@ -1,0 +1,26 @@
+Sua logo
+<h3>Notificação do sistema Sua Empresa.</h3>
+
+<p>Seu caso foi recebido e está em processo de comunicação.</p>
+
+<p>Dados do caso:<br/>
+
+Código: $caso.casoId<br/>
+Data e hora: $caso.data<br/>
+Requerente: josé mundico <br/>
+Requerido: eduardo ferreira <br/>
+Valor: R$ 300,00<br/>
+Situação: $caso.status.descricao<br/>
+</p>
+
+Esse e-mail tem função informativa, acesse o sistema para saber a situação atual e tomar as ações necessárias para dar seguimento ao andamento do caso.
+
+Acessar sistema
+Link para o sistema: http://www.literoportugues.com/cma/
+
+Você esta recebendo esse e-mail como usuário da conta da CMA, se não deseja receber mais essas notificações por e-mail acesse o sistema e altere as configurações de notificações.
+
+Esse e-mail foi enviado de forma automática e não deve ser respondido. Se deseja entrar em contato conosco sobre esse e-mail procure um dos nossos canais de comunicação.
+
+Atenciosamente,
+CMA

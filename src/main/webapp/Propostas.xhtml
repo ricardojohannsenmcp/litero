@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+<h:head>
+</h:head>
+<h:body>
+	<h:panelGroup id="panel_lista_propostas">
+		<b:panel rendered="#{casoMB.proposta == null}">
+
+			<b:commandButton icon="file" id="btn_nova_proposta" process="@this"
+				value="Nova Proposta" look="primary" rendered="#{casoMB.podeInserirProposta}"
+				action="#{casoMB.novaProposta()}"
+				update="panel_lista_propostas panel_form_proposta" />
+			<b:dataTable id="dt_propostas" value="#{casoMB.propostas}" var="proposta"
+				customLangUrl="#{resource['/json/pt-br.json']}" info="false"
+				responsive="true" striped="false" paginated="false"
+				searching="false">
+				<b:dataTableColumn header-style-class='hidden' >
+				<h:outputText value="#{proposta.data}" >
+				<f:convertDateTime pattern="dd/MM/yyyy hh:MM:ss"/>
+				</h:outputText>
+				</b:dataTableColumn>
+				<b:dataTableColumn value="#{proposta.pessoa.nome}"
+					header-style-class='hidden' style="width:300px"/>
+				<b:dataTableColumn value="#{proposta.valor}"
+					header-style-class='hidden' />
+				<b:dataTableColumn value="#{proposta.descricao}"
+					header-style-class='hidden' style="width:600px" />
+			</b:dataTable>
+		</b:panel>
+	</h:panelGroup>
+	<h:panelGroup id="panel_form_proposta">
+		<b:panel rendered="#{casoMB.proposta != null}">
+
+
+			<b:inputTextarea label="Proposta" id="txt_prop"
+				value="#{casoMB.proposta.descricao}" />
+				
+			<b:inputText label="Valor" value="#{casoMB.proposta.valor}" id="txt_valor_prop" />
+
+			<b:formGroup>
+				<b:commandButton icon-awesome="ban" look="danger" value="Cancelar"
+					process="@this" action="#{casoMB.voltarListagemPropostas()}"
+					update="panel_lista_propostas panel_form_proposta" />
+					<p:spacer />
+				<b:commandButton value="Salvar Proposta" look="primary" icon-awesome="save"
+					process="tab_propostas:panel_form_proposta" action="#{casoMB.salvarProposta()}"
+				/>
+
+
+			</b:formGroup>
+
+		</b:panel>
+	</h:panelGroup>
+
+</h:body>
+
+</html>

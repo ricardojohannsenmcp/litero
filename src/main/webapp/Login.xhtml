@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+<h:head>
+
+<style type="text/css">
+	.centered {
+position:relative;
+height: 100px;
+margin:0 auto;
+padding: 10% 0;
+}
+</style>
+	
+</h:head>
+<h:body>
+
+	<div id="container" class="ui-fluid" align="center"
+		style="background-color: #E8E8E8">
+
+		<h:graphicImage library="images" name="cma.png" height="120px"
+			style="margin:10px" />
+
+
+		<b:row>
+			<b:column span="4">
+			</b:column>
+			<b:column span="4">
+				<h:form id="form" prependId="true">
+					<p:panel header="CMA">
+						<p:messages autoUpdate="true" closable="true" />
+						<f:facet name="footer">
+							<b:commandButton icon-awesome="sign-in" value="Login" action="#{loginMB.logar()}"
+								look="primary" style="width:100%" />
+
+						</f:facet>
+						<p:panelGrid columns="2" styleClass="ui-noborder">
+							<h:outputLabel value="Login" for="login" />
+							<b:inputText placeholder="Login" id="login"
+								value="#{loginMB.login}" required="true"
+								requiredMessage="Login é campo obrigatório">
+								<f:facet name="prepend">
+									<b:icon name="user" />
+								</f:facet>
+							</b:inputText>
+
+
+							<h:outputLabel value="Senha" for="senha" />
+							<b:inputSecret placeholder="Senha" id="senha"
+								value="#{loginMB.senha}" required="true"
+								requiredMessage="Senha é campo obrigatório">
+								<f:facet name="prepend">
+									<b:iconAwesome name="key" />
+								</f:facet>
+							</b:inputSecret>
+						</p:panelGrid>
+					</p:panel>
+				</h:form>
+			</b:column>
+			<b:column span="4">
+			</b:column>
+		</b:row>
+
+
+		<h:link value="Não Sou Cadastrado" outcome="Cadastro" />
+	</div>
+</h:body>
+</html>

@@ -1,0 +1,157 @@
+<ui:composition template="_template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	 xmlns:b="http://bootsfaces.net/ui">
+	
+<ui:define name="conteudo">
+	
+
+<h:panelGrid columns="1" style="width: 100%" id="recibo">
+
+  <h2>Caso ##{wizardMB.caso.casoId} incluído com sucesso!</h2>
+  
+                                       <h:form>
+                                       <b:button icon-awesome="print" value="Imprimir" onclick="myFunction()" outcome="#"></b:button>
+                                       <b:button icon-awesome="home" value="Meus Casos"  outcome="Casos"></b:button>
+</h:form>
+								
+
+									<h:outputText value="Objeto"
+										style="font-weight:bold;font-size:11pt;" />
+
+									<h:outputText value="#{wizardMB.caso.descricao}"
+										style="font-size:10pt;" />
+
+
+									<h:outputText value="Proposta"
+										style="font-weight:bold;font-size:11pt;" />
+									<h:outputText value="#{wizardMB.caso.proposta}"
+										style="font-size:10pt;" />
+
+									<h:outputText value="Valor"
+										style="font-weight:bold;font-size:11pt;" />
+									<h:outputText value="R$ #{wizardMB.caso.valor}"
+										style="font-size:10pt;" />
+
+									<h:outputText value="Data"
+										style="font-weight:bold;font-size:11pt;" />
+									<h:outputText value="#{wizardMB.caso.data}"
+										style="font-size:10pt;">
+										<f:convertDateTime pattern="dd/MM/yyyy" />
+									</h:outputText>
+
+									<p:spacer />
+
+									<b:row>
+										<b:column medium-screen="12">
+											<p:outputLabel
+												style="font-size:12pt;font-weight:bold;color:#347AB6"
+												value="Requerentes" />
+
+										</b:column>
+									</b:row>
+
+
+
+									<p:separator style="margin:2px;" />
+
+
+									
+
+									<b:dataTable value="#{wizardMB.requerentes}" var="parte"
+										info="false" paginated="false" searching="false"
+										style="width:100%;" border="none">
+
+										<b:dataTableColumn style="width:50%"
+											header-style-class="hidden">
+											<h:panelGrid columns="1">
+												<h:outputText value="#{parte.pessoa.nome}"
+													style="font-weight:bold;" />
+
+												<h:outputText value="#{parte.pessoa.email}" />
+
+												<h:outputText value="Telefone: #{parte.pessoa.telefone}" />
+
+												<h:outputText value="#{parte.pessoa.rotuloCpfCnpj}: #{parte.pessoa.cpfCnpj}" />
+
+												
+											</h:panelGrid>
+
+										</b:dataTableColumn>
+										<b:dataTableColumn header-style-class="hidden">
+											<h:panelGrid columns="1">
+												<b:row>
+													<b:iconAwesome name="map-marker" />
+													<p:spacer width="3px" />
+													<h:outputText value="Endereço" style="font-weight:bold;" />
+												</b:row>
+
+												<h:outputText value="#{parte.pessoa.logradouro}, #{parte.pessoa.numeroLogradouro}, #{parte.pessoa.bairro}" />
+												<h:outputText value="#{parte.pessoa.cidade} - #{parte.pessoa.uf}" />
+												<h:outputText value="CEP: #{parte.pessoa.cep}" />
+
+											</h:panelGrid>
+
+										</b:dataTableColumn>
+									</b:dataTable>
+
+									<p:spacer />
+
+									<b:row>
+										<b:column medium-screen="12">
+											<p:outputLabel
+												style="font-size:12pt;font-weight:bold;color:#347AB6"
+												value="Requeridos" />
+										</b:column>
+									</b:row>
+
+									<p:separator style="margin:2px;" />
+
+									
+
+									<b:dataTable value="#{wizardMB.requeridos}" var="parte"
+										info="false" paginated="false" searching="false"
+										style="width:100%;" border="none">
+										<b:dataTableColumn style="width:50%"
+											header-style-class="hidden">
+											<h:panelGrid columns="1">
+												<h:outputText value="#{parte.pessoa.nome}"
+													style="font-weight:bold;" />
+
+												<h:outputText value="#{parte.pessoa.email}" />
+
+												<h:outputText value="Telefone: #{parte.pessoa.telefone}" />
+
+												<h:outputText value="#{parte.pessoa.rotuloCpfCnpj}: #{parte.pessoa.cpfCnpj}" />
+
+											</h:panelGrid>
+
+										</b:dataTableColumn>
+										<b:dataTableColumn header-style-class="hidden">
+											<h:panelGrid columns="1">
+												<b:row>
+													<b:iconAwesome name="map-marker" />
+													<p:spacer width="3px" />
+													<h:outputText value="Endereço" style="font-weight:bold;" />
+												</b:row>
+
+												<h:outputText value="#{parte.pessoa.logradouro}, #{parte.pessoa.numeroLogradouro}, #{parte.pessoa.bairro}" />
+												<h:outputText value="#{parte.pessoa.cidade} - #{parte.pessoa.uf}" />
+												<h:outputText value="CEP: #{parte.pessoa.cep}" />
+
+											</h:panelGrid>
+
+										</b:dataTableColumn>
+
+									</b:dataTable>
+								</h:panelGrid>
+							<script type="text/javascript">
+function myFunction() {
+    window.print();
+}
+</script>
+								</ui:define>
+</ui:composition>

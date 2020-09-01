@@ -1,0 +1,69 @@
+<ui:composition template="_template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	 xmlns:b="http://bootsfaces.net/ui">
+	<f:metadata>
+		<f:viewAction action="#{wizardMB.validarConversacao()}" />
+	</f:metadata>
+	<ui:define name="conteudo">
+		<b:row>
+			<b:column span="2">
+			</b:column>
+			<b:column span="8">
+				<h2>Requeridos</h2>
+				<h5>Nesta área você irá vincular as partes contrárias neste
+					processo.</h5>
+				<b:form id="frm_partes" prependId="false">
+					<p:messages id="mensagens" autoUpdate="true" closable="true" />
+					<b:formGroup id="pesquisa">
+						<b:panelGrid colSpans="2,6,4">
+							<h:outputText value="Partes Contrárias:" />
+							<p:autoComplete id="complete_parte"
+								completeMethod="#{wizardMB.buscarPartes}" size="45"
+								placeholder="Nome, CPF ou CNPJ"
+								value="#{wizardMB.parteSelecionada}" var="parteSelecionada"
+								itemLabel="#{parteSelecionada.nome}"
+								itemValue="#{parteSelecionada}" forceSelection="true">
+								<p:ajax event="itemSelect"
+									listener="#{wizardMB.adicionarParteContraria}" update="pesquisa painel" />
+							</p:autoComplete>
+							<b:commandButton icon-awesome="plus" look="success"
+								action="#{wizardMB.novaParteRequerido()}" />
+						</b:panelGrid>
+					</b:formGroup>
+					<b:formGroup id="painel">
+						<b:dataTable id="rpt_partes" value="#{wizardMB.requeridos}" rendered="#{not wizardMB.emptyRequeridos}"
+							var="requerido" style="background-color:#FFFFFF" info="false"
+							striped="false" paginated="false" searching="false">
+							<b:dataTableColumn value="#{requerido.pessoa.nome}"
+								header-style-class="hidden" style="width:600px;" />
+								
+								<b:dataTableColumn label="Principal"
+								header-style-class="hidden" style="width:600px;">
+								<b:selectBooleanCheckbox value="#{requerido.principal}" label="Principal" update="@form" onclick="ajax:wizardMB.alterarRequeridoPrincipal(requerido)">
+								</b:selectBooleanCheckbox>
+								</b:dataTableColumn>
+								
+							<b:dataTableColumn header-style-class="hidden">
+								<b:commandButton icon-awesome="remove" look="danger" size="xs"
+									action="#{wizardMB.removerParteContraria(requerido)}" />
+							</b:dataTableColumn>
+						</b:dataTable>
+					</b:formGroup>
+					<b:formGroup>
+						<b:commandButton icon-awesome="chevron-left" value="Anterior"
+							action="#{wizardMB.selecionarRequerentes}" look="danger" />
+						<p:spacer />
+						<b:commandButton look="primary" icon-awesome="chevron-right" icon-align="right"
+							value="Enviar Caso" action="#{wizardMB.salvarCaso}" />
+					</b:formGroup>
+				</b:form>
+			</b:column>
+			<b:column span="2">
+			</b:column>
+		</b:row>
+	</ui:define>
+</ui:composition>

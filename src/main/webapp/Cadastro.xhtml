@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui"
+	xmlns:o="http://omnifaces.org/ui">
+
+<h:head>
+
+	<style type="text/css">
+body {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 14px;
+	line-height: 25px;
+}
+</style>
+
+</h:head>
+<h:body>
+
+	<b:container fluid="true">
+		<h:form id="frm_parte" prependId="false">
+			<b:row style="background-color:#E8E8E8;padding:5px;">
+				<b:column span="3">
+					<h:graphicImage library="images" name="cma.png" height="60px" />
+				</b:column>
+			</b:row>
+
+			<b:row>
+
+				<b:column span="2" style="padding:20px;">
+					<b:iconAwesome name="id-card" size="lg"
+						style="top:-3px;position:relative;" />
+					<p:spacer width="5px" />
+					<h:outputText value="Cadastro"
+						style="font-size:18pt;font-weight:bold;" />
+				</b:column>
+			</b:row>
+			
+			<o:validateEqual components="password password2"
+				message="Campo senha diferente do campo confirmação de senha"
+				showMessageFor="password2" />
+			<p:messages id="messages" autoUpdate="true" closable="true"
+				showIcon="false" />
+
+			<b:formGroup>
+				<b:inputText id="nome" medium-screen="12" label="Nome"
+					value="#{cadastroMB.parte.nome}" />
+			</b:formGroup>
+			<b:formGroup>
+				<b:selectOneMenu id="tipo_pessoa" process="@this" update="cpf_cnpj"
+					label="Tipo" medium-screen="3"
+					value="#{cadastroMB.parte.tipoPessoa}"
+					converter="omnifaces.SelectItemsConverter">
+					<f:selectItems value="#{cadastroMB.tiposPessoa}" var="tipoPessoa"
+						itemLabel="#{tipoPessoa.descricao}" itemValue="#{tipoPessoa}" />
+				</b:selectOneMenu>
+				<b:inputText id="cpf_cnpj" label="#{cadastroMB.parte.rotuloCpfCnpj}"
+					medium-screen="3" value="#{cadastroMB.parte.cpfCnpj}">
+					<f:attribute name="tipo"
+						value="#{cadastroMB.parte.tipoPessoa.descricao}" />
+				</b:inputText>
+			</b:formGroup>
+			<b:formGroup>
+				<b:inputText id="email" medium-screen="3" label="Email"
+					value="#{cadastroMB.parte.email}" />
+				<b:inputText id="telefone" medium-screen="3" label="Telefone"
+					value="#{cadastroMB.parte.telefone}" />
+			</b:formGroup>
+			<b:formGroup>
+				<b:inputText id="registro" medium-screen="4"
+					label="Registro Civil / profissional"
+					value="#{wizardMB.parteSelecionada.registro}" />
+				<b:inputText id="orgao" medium-screen="4" label="Orgão Emissor"
+					value="#{wizardMB.parteSelecionada.orgaoEmissor}" />
+				<b:datepicker lang="pt_BR" id="data_emissao" medium-screen="4"
+					label="Data Emissão"
+					value="#{wizardMB.parteSelecionada.dataEmissao}" />
+			</b:formGroup>
+			<b:formGroup>
+				<b:selectOneMenu id="estado_civil" label="Estado Civil"
+					medium-screen="3" value="#{cadastroMB.parte.estadoCivil}"
+					converter="omnifaces.SelectItemsConverter">
+					<f:selectItems value="#{cadastroMB.estadosCivis}" var="estadoCivil"
+						itemLabel="#{estadoCivil.descricao}" itemValue="#{estadoCivil}" />
+				</b:selectOneMenu>
+				<b:datepicker lang="pt_BR" id="data_nascimento" medium-screen="3"
+					label="Data Nascimento" value="#{cadastroMB.parte.dataNascimento}" />
+			</b:formGroup>
+			<b:formGroup>
+				<b:inputText medium-screen="3" label="Nacionalidade"
+					value="#{cadastroMB.parte.profissao}" />
+				<b:inputText id="profissao" medium-screen="3" label="Profissão"
+					value="#{cadastroMB.parte.profissao}" />
+			</b:formGroup>
+			<b:formGroup id="frm_group_endereco">
+				<b:formGroup>
+					<b:inputText id="cep" label="Cep" medium-screen="3"
+						value="#{cadastroMB.parte.cep}">
+						<f:facet name="append">
+							<b:commandButton look="primary" ajax="true" process="@parent"
+								update="frm_group_endereco" action="#{cadastroMB.buscarCep}"
+								iconAwesome="search" icon-align="right" />
+						</f:facet>
+					</b:inputText>
+					<b:inputText id="logradouro" medium-screen="6" label="Logradouro"
+						value="#{cadastroMB.parte.logradouro}" />
+					<b:inputText id="numero" medium-screen="3" label="Número"
+						value="#{cadastroMB.parte.numeroLogradouro}" />
+				</b:formGroup>
+				<b:formGroup>
+					<b:inputText id="complemento" medium-screen="3" label="Complemento"
+						value="#{cadastroMB.parte.complemento}" />
+					<b:inputText id="bairro" medium-screen="3" label="Bairro"
+						value="#{cadastroMB.parte.bairro}" />
+					<b:inputText id="uf" medium-screen="2" label="UF"
+						value="#{cadastroMB.parte.uf}" />
+					<b:inputText id="cidade" medium-screen="4" label="Cidade"
+						value="#{cadastroMB.parte.cidade}" />
+				</b:formGroup>
+			</b:formGroup>
+			<p:separator
+				style="height:10px;background-color:#FFFFFF;border-color:#FFFFFF" />
+			<p:separator />
+			<b:formGroup>
+				<b:inputText id="login" label="Login" medium-screen="4"
+					value="#{cadastroMB.usuarioForm.login}" />
+				<b:inputSecret id="password" label="Senha" medium-screen="4"
+					value="#{cadastroMB.usuarioForm.senha}" />
+				<b:inputSecret id="password2" label="Confirmação de senha" required="true"
+					medium-screen="4"
+					value="#{cadastroMB.usuarioForm.confirmacaoSenha}" />
+			</b:formGroup>
+
+			<p:separator
+				style="height:10px;background-color:#FFFFFF;border-color:#FFFFFF" />
+
+			<b:row>
+
+				<b:column span="12">
+					<h:outputText value="* campos obrigatórios"
+						style="color:gray;font-style:italic;" />
+
+				</b:column>
+
+			</b:row>
+
+
+			<div class="form-group" align="center">
+				<b:button value="Cancelar" icon-awesome="ban" outcome="Login"
+					look="danger" />
+				<p:spacer style="width:5px" />
+				<b:commandButton look="primary" action="#{cadastroMB.salvar}"
+					icon-awesome="save" value="Salvar" />
+
+			</div>
+
+		</h:form>
+	</b:container>
+
+</h:body>
+</html>

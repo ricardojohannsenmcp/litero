@@ -1,0 +1,41 @@
+<ui:composition xmlns="http://www.w3.org/1999/xhtml"
+	template="_template.xhtml" xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:b="http://bootsfaces.net/ui" xmlns:p="http://primefaces.org/ui">
+
+	<ui:define name="conteudo">
+			<b:form id="frm_parte" prependId="false">
+				<p:messages id="messages" autoUpdate="true" />
+
+				<b:formGroup>
+					<b:inputText id="nome" medium-screen="12" label="Nome"
+						value="#{selecaoMediadorMB.convidado.nome}" />
+				</b:formGroup>
+				
+				<b:formGroup>
+					<b:inputText id="email" medium-screen="6" label="Email"
+						value="#{selecaoMediadorMB.convidado.email}" />
+					<b:inputText id="telefone" medium-screen="6" label="Telefone"
+						value="#{selecaoMediadorMB.convidado.telefone}" />
+				</b:formGroup>
+				
+				
+				
+				
+				
+				<p:separator  style="height:10px; border-color:#E8E8E8;"/>
+				<div class="form-group" align="center">
+					<b:commandButton value="Cancelar" icon-awesome="ban"
+						action="#{selecaoMediadorMB.voltarSelecaoMediador}" immediate="true" look="danger" />
+						<p:spacer style="width:5px"/>
+					<b:commandButton look="primary" icon-awesome="save"
+						value="Salvar" action="#{selecaoMediadorMB.salvarPessoa}" />
+					</div>
+						
+			</b:form>
+			
+		</ui:define>
+	</ui:composition>
+
+

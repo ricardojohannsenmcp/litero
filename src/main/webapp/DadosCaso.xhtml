@@ -1,0 +1,100 @@
+<ui:composition template="_template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+	<f:metadata>
+		<f:viewAction action="#{wizardMB.validarConversacao}" />
+	</f:metadata>
+	<ui:define name="conteudo">
+	
+	<script type="text/javascript">
+	
+	function mascara(o,f){ 
+	v_obj=o 
+	v_fun=f 
+	setTimeout("execmascara()",1) 
+} 
+function execmascara(){ 
+	v_obj.value=v_fun(v_obj.value) 
+} 
+function moeda(v){ 
+	v=v.replace(/\D/g,""); // permite digitar apenas numero 
+	v=v.replace(/(\d{1})(\d{15})$/,"$1.$2") // coloca ponto antes dos ultimos digitos 
+	v=v.replace(/(\d{1})(\d{11})$/,"$1.$2") // coloca ponto antes dos ultimos 11 digitos 
+	v=v.replace(/(\d{1})(\d{8})$/,"$1.$2") // coloca ponto antes dos ultimos 8 digitos 
+	v=v.replace(/(\d{1})(\d{5})$/,"$1.$2") // coloca ponto antes dos ultimos 5 digitos 
+	v=v.replace(/(\d{1})(\d{1,2})$/,"$1,$2") // coloca virgula antes dos ultimos 2 digitos 
+	return v; 
+}
+</script>
+	
+	
+		<b:row>
+			<b:column span="2">
+			</b:column>
+			<b:column span="8">
+
+
+				<!-- 				<ui:include src="/Progress.xhtml" />
+ -->
+				<h2>Sobre o caso</h2>
+				<h5>Preencha os campos abaixo com as informações sobre o caso
+					que deseja resolver</h5>
+				<b:form id="frm_caso" prependId="false">
+
+					<b:row>
+
+
+						<p:messages id="mensagens" closable="true" />
+
+						<b:inputTextarea label="Conte-nos seu problema" id="descricao"
+							value="#{wizardMB.caso.descricao}" medium-screen="12" />
+
+						<b:inputTextarea label="Proposta" id="proposta"
+							value="#{wizardMB.caso.proposta}" medium-screen="12" />
+							
+						<!-- <b:inputText label="Valor objeto da demanda" id="valor"
+							value="#{wizardMB.caso.valor}" medium-screen="12" /> -->
+							
+						
+
+					
+						<b:column span="12">
+							<p:outputLabel for="valor" value="Valor objeto da demanda" />
+						</b:column>
+						<b:column span="12">
+							
+						<p:inputText id="valor" value="#{wizardMB.caso.valor}" onkeydown="mascara(this,moeda)">
+						<f:convertNumber pattern="#,##0.00" />
+						</p:inputText>
+						
+						</b:column>
+						
+						
+						<b:column span="12">
+							<h:outputText value="* campos obrigatórios"
+								style="color:gray;font-style:italic;" />
+
+						</b:column>
+					</b:row>
+
+					<p:spacer/>
+					
+					<b:formGroup>
+						<b:button icon-awesome="ban" value="Cancelar" icon-align="left"
+							outcome="Casos" look="danger" />
+						<p:spacer />
+						<b:commandButton id="btn_prox" icon-awesome="chevron-right"
+							icon-align="right" value="Próximo"
+							action="#{wizardMB.selecionarRequerentes}" look="primary" />
+					</b:formGroup>
+				</b:form>
+			</b:column>
+			<b:column span="2">
+			</b:column>
+		</b:row>
+	</ui:define>
+</ui:composition>
+

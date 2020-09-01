@@ -1,0 +1,62 @@
+<ui:composition template="_template.xhtml"
+	xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	 xmlns:b="http://bootsfaces.net/ui">
+	<f:metadata>
+		<f:viewAction action="#{wizardMB.validarConversacao()}" />
+	</f:metadata>
+	<ui:define name="conteudo">
+		<b:row>
+			<b:column span="2">
+			</b:column>
+			<b:column span="8">
+				<h2>Requerentes</h2>
+				<h5>Nesta área você irá vincular os clientes que estão
+					envolvidos com este processo.</h5>
+				<b:form id="frm_partes" prependId="false">
+					<p:messages id="mensagens" autoUpdate="true" closable="true" />
+					<b:formGroup id="pesquisa">
+						<b:panelGrid colSpans="2,6,4">
+							<h:outputText value="Outras Partes:" />
+							<p:autoComplete id="complete_parte" size="45"
+								placeholder="Nome, CPF ou CNPJ"
+								completeMethod="#{wizardMB.buscarPartes}"
+								value="#{wizardMB.parteSelecionada}" var="parteSelecionada"
+								itemLabel="#{parteSelecionada.nome}"
+								itemValue="#{parteSelecionada}" forceSelection="true">
+								<p:ajax event="itemSelect" listener="#{wizardMB.adicionarParte}"
+									update="painel pesquisa" />
+							</p:autoComplete>
+							<b:commandButton icon-awesome="plus" look="success"
+								action="#{wizardMB.novaParteRequerente}" />
+						</b:panelGrid>
+					</b:formGroup>
+					<b:formGroup id="painel">
+						<b:dataTable id="rpt_partes" value="#{wizardMB.requerentes}" customLangUrl="#{resource['/json/pt-br.json']}"
+							style="background-color:#FFFFFF" var="requerente" info="false"
+							striped="false" paginated="false" searching="false">
+							<b:dataTableColumn value="#{requerente.pessoa.nome}"
+								header-style-class="hidden" style="width:600px;" />
+							<b:dataTableColumn header-style-class="hidden">
+								<b:commandButton icon-awesome="remove" size="xs" look="danger"
+									action="#{wizardMB.removerParte(requerente)}" />
+							</b:dataTableColumn>
+						</b:dataTable>
+					</b:formGroup>
+					<b:formGroup>
+						<b:commandButton icon-awesome="chevron-left" value="Anterior"
+							look="danger" action="#{wizardMB.preencherDadosCaso}" />
+						<p:spacer />
+						<b:commandButton look="primary" icon-awesome="chevron-right" icon-align="right"
+							value="Próximo" action="#{wizardMB.selecionarRequeridos}" />
+					</b:formGroup>
+				</b:form>
+			</b:column>
+			<b:column span="2">
+			</b:column>
+		</b:row>
+	</ui:define>
+</ui:composition>

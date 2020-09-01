@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:b="http://bootsfaces.net/ui"
+	xmlns:o="http://omnifaces.org/ui">
+<h:head>
+<f:metadata>
+<f:viewParam name="token" value="#{confirmacaoRegistroMB.token}"/>
+<f:viewAction action="#{confirmacaoRegistroMB.init}"/>
+</f:metadata>
+</h:head>
+<h:body>
+
+	<div id="container" class="ui-fluid" align="center">
+		
+		
+		<h:graphicImage library="images" name="cma.png" height="60px" style="margin:10px" />
+	
+		<h:form id="form" prependId="true">
+		
+		<p:messages id="messages" autoUpdate="true" closable="true" showIcon="true" />
+		<o:validateEqual components="password password2"
+				message="Campo senha diferente do campo confirmação de senha" showMessageFor="password2" />
+		
+		<b:formGroup>
+		<b:inputText id="login" label="Login" medium-screen="4"
+					value="#{confirmacaoRegistroMB.usuarioForm.login}" />
+				<b:inputSecret id="password" label="Senha" medium-screen="4"
+					value="#{confirmacaoRegistroMB.usuarioForm.senha}" />
+				<b:inputSecret id="password2" label="Confirmação de senha" medium-screen="4"
+					value="#{confirmacaoRegistroMB.usuarioForm.confirmacaoSenha}" />
+			</b:formGroup>
+			
+			<p:separator style="height:10px;background-color:#FFFFFF;border-color:#FFFFFF"/>
+				<div class="form-group" align="center">
+				<b:button value="Cancelar" icon-awesome="ban"
+						outcome="Login" look="danger" />
+						<p:spacer style="width:5px"/>
+				<b:commandButton look="primary" action="#{confirmacaoRegistroMB.salvar}"
+					icon-awesome="save" value="Salvar" />
+					</div>
+			
+		</h:form>
+          </div>
+</h:body>
+</html>

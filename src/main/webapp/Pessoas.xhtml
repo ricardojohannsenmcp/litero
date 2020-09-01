@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui"
+	xmlns:o="http://omnifaces.org/ui">
+
+
+<ui:composition template="_template.xhtml">
+	<ui:define name="conteudo">
+		<f:metadata>
+			<f:viewAction action="#{pessoaMB.listar()}" />
+		</f:metadata>
+
+		<b:form id="frm_parte" prependId="false">
+		<b:row>
+		<b:column span="2">
+				<b:iconAwesome name="copy" size="lg"
+					style="top:-3px;position:relative;" />
+				<p:spacer width="5px" />
+				<h:outputText value="Pessoas"
+					style="font-size:18pt;font-weight:bold;" />
+			</b:column>
+			
+			</b:row>
+
+			<p:messages id="msgs" closable="true" autoUpdate="true"
+				severity="error, warn" />
+
+			<b:panel id="painel_listagem" rendered="#{pessoaMB.modoListagem}">
+
+				<b:row style="margin-bottom:10px;margin-top:10px;">
+					<b:column>
+
+						<b:commandButton icon="plus" id="btn_nova_pessoa"
+							value="Nova Pessoa" update="frm_parte" look="success"
+							action="#{pessoaMB.novaPessoa}" size="md" style="float:right;" />
+
+					</b:column>
+
+				</b:row>
+
+				<b:row>
+					<b:column>
+						<b:dataTable id="dt_partes" value="#{pessoaMB.partes}" var="parte"
+							customLangUrl="#{resource['/json/pt-br.json']}" searching="true"
+							info="false">
+							<b:dataTableColumn label="Nome" value="#{parte.nome}" />
+							<b:dataTableColumn label="Tipo"
+								value="#{parte.tipoPessoa.descricao}" />
+							<b:dataTableColumn label="CPF/CNPJ" value="#{parte.cpfCnpj}" />
+							<b:dataTableColumn label="Telefone" value="#{parte.telefone}" />
+							<b:dataTableColumn label="Email" value="#{parte.email}" />
+							<b:dataTableColumn label="Ações">
+								<b:commandButton icon="edit" ajax="true" look="primary" tooltip="Editar"
+									update="frm_parte" action="#{pessoaMB.editarParte(parte)}" />
+								<p:spacer />
+								<b:commandButton icon="remove" ajax="true" look="danger" tooltip="Excluir"
+									oncomplete="PF('confirmacaoExclusao').show()" process="@this"
+									update=":frm_parte:confirmacaoExclusaoDialog" />
+
+								<p:confirmDialog id="confirmacaoExclusaoDialog"
+									widgetVar="confirmacaoExclusao"
+									message="Tem certeza que deseja excluir a Pessoa #{parte.nome}?"
+									header="Exclusão de Pessoa" severity="alert">
+
+									<p:button value="Não"
+										onclick="PF('confirmacaoExclusao').hide(); return false;" />
+									<p:commandButton value="Sim" update="frm_parte"
+										onclick="PF('confirmacaoExclusao').hide()"
+										action="#{pessoaMB.removerParte(parte)}" />
+								</p:confirmDialog>
+
+							</b:dataTableColumn>
+						</b:dataTable>
+					</b:column>
+				</b:row>
+			</b:panel>
+
+			<b:panel id="painel_edicao" rendered="#{pessoaMB.modoEdicao}">
+			
+			<div class="ui-fluid">
+
+				<b:formGroup>
+					<b:inputText id="nome" medium-screen="12" label="Nome"
+						value="#{pessoaMB.parte.nome}" />
+				</b:formGroup>
+				<b:formGroup>
+					<b:selectOneMenu id="tipo_pessoa" process="@this" update="cpf_cnpj"
+						label="Tipo" medium-screen="3"
+						value="#{pessoaMB.parte.tipoPessoa}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItems value="#{pessoaMB.tiposPessoa}" var="tipoPessoa"
+							itemLabel="#{tipoPessoa.descricao}" itemValue="#{tipoPessoa}" />
+					</b:selectOneMenu>
+					<b:inputText id="cpf_cnpj" label="#{pessoaMB.parte.rotuloCpfCnpj}"
+						medium-screen="3" value="#{pessoaMB.parte.cpfCnpj}">
+						<f:attribute name="tipo"
+							value="#{pessoaMB.parte.tipoPessoa.descricao}" />
+					</b:inputText>
+				</b:formGroup>
+				<b:formGroup>
+					<b:inputText id="email" medium-screen="3" label="Email"
+						value="#{pessoaMB.parte.email}" />
+					<b:inputText id="telefone" medium-screen="3" label="Telefone"
+						value="#{pessoaMB.parte.telefone}" />
+				</b:formGroup>
+				<b:formGroup>
+					<b:inputText id="registro" medium-screen="4"
+						label="Registro Civil / profissional"
+						value="#{wizardMB.parteSelecionada.registro}" />
+					<b:inputText id="orgao" medium-screen="4" label="Orgão Emissor"
+						value="#{wizardMB.parteSelecionada.orgaoEmissor}" />
+					<b:datepicker lang="pt_BR" id="data_emissao" medium-screen="4"
+						label="Data Emissão"
+						value="#{wizardMB.parteSelecionada.dataEmissao}" />
+				</b:formGroup>
+				<b:formGroup>
+					<b:selectOneMenu id="estado_civil" label="Estado Civil"
+						medium-screen="3" value="#{pessoaMB.parte.estadoCivil}"
+						converter="omnifaces.SelectItemsConverter">
+						<f:selectItems value="#{pessoaMB.estadosCivis}" var="estadoCivil"
+							itemLabel="#{estadoCivil.descricao}" itemValue="#{estadoCivil}" />
+					</b:selectOneMenu>
+					<b:datepicker lang="pt_BR" id="data_nascimento" medium-screen="3"
+						label="Data Nascimento" value="#{pessoaMB.parte.dataNascimento}" />
+				</b:formGroup>
+				<b:formGroup>
+					<b:inputText medium-screen="3" label="Nacionalidade"
+						value="#{pessoaMB.parte.profissao}" />
+					<b:inputText id="profissao" medium-screen="3" label="Profissão"
+						value="#{pessoaMB.parte.profissao}" />
+				</b:formGroup>
+				<b:formGroup id="frm_group_endereco">
+					<b:formGroup>
+						<b:inputText id="cep" label="Cep" medium-screen="3"
+							value="#{pessoaMB.parte.cep}">
+							<f:facet name="append">
+								<b:commandButton look="primary" ajax="true" process="@parent"
+									update="frm_group_endereco" action="#{pessoaMB.buscarCep}"
+									iconAwesome="search" icon-align="right" />
+							</f:facet>
+						</b:inputText>
+						<b:inputText id="logradouro" medium-screen="6" label="Logradouro"
+							value="#{pessoaMB.parte.logradouro}" />
+						<b:inputText id="numero" medium-screen="3" label="Número"
+							value="#{pessoaMB.parte.numeroLogradouro}" />
+					</b:formGroup>
+					<b:formGroup>
+						<b:inputText id="complemento" medium-screen="3"
+							label="Complemento" value="#{pessoaMB.parte.complemento}" />
+						<b:inputText id="bairro" medium-screen="3" label="Bairro"
+							value="#{pessoaMB.parte.bairro}" />
+						<b:inputText id="uf" medium-screen="2" label="UF"
+							value="#{pessoaMB.parte.uf}" />
+						<b:inputText id="cidade" medium-screen="4" label="Cidade"
+							value="#{pessoaMB.parte.cidade}" />
+					</b:formGroup>
+				</b:formGroup>
+
+
+				<f:facet name="footer">
+
+					<b:commandButton icon-awesome="ban" value="Cancelar" look="danger"
+						action="#{pessoaMB.cancelar}" process="@this" update="frm_parte" />
+
+					<p:spacer />
+
+					<b:commandButton icon-awesome="save" value="Salvar" look="primary"
+						action="#{pessoaMB.salvar}" process="@form" update="frm_parte" />
+
+				</f:facet>
+				
+				</div>
+
+
+
+			</b:panel>
+		</b:form>
+
+	</ui:define>
+</ui:composition>
+</html>

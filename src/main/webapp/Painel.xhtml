@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui"
+	xmlns:o="http://omnifaces.org/ui"
+	xmlns:timeline="http://java.sun.com/jsf/composite/timeline">
+
+<ui:composition template="_template.xhtml">
+
+	<ui:define name="conteudo">
+		<h:body>
+		
+		<h:form id="formCaso" prependId="false" enctype="multipart/form-data">
+		
+			<b:row style="margin:10px;">
+				<b:column>
+					<b:iconAwesome name="bar-chart" size="lg" style="top:-3px;position:relative;"/>
+					<p:spacer width="5px"/>
+					<h:outputText value="Estatísticas"
+						style="font-size:18pt;font-weight:bold;" />
+				</b:column>
+			</b:row>
+
+			<b:row style="margin:10px;">
+
+				<b:column span="3" style="padding:10px;">
+					<h:panelGrid columns="2">
+						<b:column style="background-color:#337ab7;width:80px; height:70px;">
+							<b:iconAwesome name="file-o" size="3x" style="opacity:0.5; align:center;margin:10px;"  />
+						</b:column>
+
+						<b:column style="background-color:white;height:70px; width:240px;">
+							<b:row>
+								<h:outputText value="#{chartMB.qtdCasosTramitando}" style="font-size:18pt;font-weight:bold;margin-left:5px;" />
+							</b:row>
+							<b:row>
+								<h:outputText value="CASOS TRAMITANDO" style="font-size:12pt;margin-left:5px;" />
+							</b:row>
+						</b:column>
+					</h:panelGrid>
+				</b:column>
+
+
+
+				<b:column span="3" style="padding:10px;">
+					<h:panelGrid columns="2">
+						<b:column style="background-color:#2aabd2;width:80px; height:70px;">
+							<b:iconAwesome name="copy" size="3x" style="opacity:0.5; align:center;margin-left:5px;margin-top:10px;" />
+						</b:column>
+
+						<b:column style="background-color:white;height:70px; width:240px;">
+							<b:row>
+								<h:outputText value="#{chartMB.qtdTotalCasos}" style="font-size:18pt;font-weight:bold;margin-left:5px;" />
+							</b:row>
+							<b:row>
+								<h:outputText value="CASOS" style="font-size:12pt;margin-left:5px;" />
+							</b:row>
+						</b:column>
+					</h:panelGrid>
+				</b:column>
+
+				<b:column span="3" style="padding:10px;">
+					<h:panelGrid columns="2">
+						<b:column style="background-color:#f0ad4e;width:80px; height:70px;">
+							<b:iconAwesome name="user" size="3x" style="opacity:0.5; align:center;margin:10px;" />
+						</b:column>
+
+						<b:column style="background-color:white;height:70px; width:240px;">
+							<b:row>
+								<h:outputText value="#{chartMB.qtdRequerentes}" style="font-size:18pt;font-weight:bold;margin-left:5px;" />
+							</b:row>
+							<b:row>
+								<h:outputText value="REQUERENTES" style="font-size:12pt;margin-left:5px;" />
+							</b:row>
+						</b:column>
+					</h:panelGrid>
+				</b:column>
+
+				<b:column span="3" style="padding:10px;">
+					<h:panelGrid columns="2">
+						<b:column style="background-color:#d9534f;width:80px; height:70px;">
+							<b:iconAwesome name="user" size="3x" style="opacity:0.5; align:center;margin:10px;" />
+						</b:column>
+
+						<b:column style="background-color:white;height:70px; width:240px;">
+							<b:row>
+								<h:outputText value="#{chartMB.qtdRequeridos}" style="font-size:18pt;font-weight:bold;margin-left:5px;" />
+							</b:row>
+							<b:row>
+								<h:outputText value="REQUERIDOS" style="font-size:12pt;margin-left:5px;" />
+							</b:row>
+						</b:column>
+					</h:panelGrid>
+				</b:column>
+			</b:row>
+			
+			  <p:growl id="growl" showDetail="true" />
+			<p:chart type="pie" model="#{chartMB.pieModel1}" style="width:400px;height:300px">
+            <p:ajax event="itemSelect" listener="#{chartMB.itemSelect}" update="growl" />
+        </p:chart>
+ 
+        
+        <!-- <p:chart type="line" value="#{chartMB.lineModel1}" style="width:500px;height:300px"/> -->
+
+</h:form>
+
+		</h:body>
+	</ui:define>
+</ui:composition>
+
+</html>

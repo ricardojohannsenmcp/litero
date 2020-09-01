@@ -1,0 +1,37 @@
+Sua logo
+<h3>CONVITE</h3>
+
+<p>Sr(a) $requerido, foi aberto um pedido de negociação on-line na Sua Empresa e V. Sria. está como parte REQUERIDA.</p>
+<p>
+participe da mediação<br/>
+Veja a seguir os dados do caso aberto:
+</p>
+
+<p>
+Código do caso: $caso.casoId<br/>
+Data e hora: $caso.data
+</p>
+<p>
+Requerente(s)<br/>
+#foreach($requerente in $caso.requerentes)
+Nome Pessoa: $requerente.pessoa.nome<br/>
+CPF/CNPJ: $requerente.pessoa.cpfCnpj<br/>
+#end
+</p>
+
+<p>Objeto:<br/>
+$caso.descricao</p>
+
+Clique no link abaixo para responder ao convite, ou copie e cole o link de acesso no seu navegador de internet.
+
+<p>Responder ao Convite</p>
+<p>Link de acesso: <a href="http://localhost:8080/camara/ConfirmacaoCadastro.xhtml?token=$token">Aceitar</a></p>
+
+<p>Caso tenha dúvida de como prosseguir, por favor, procure mais informações no nosso website e utilize um dos nossos canais de comunicação.</p>
+
+<p>Website: http://www.literoportugues.com/cma/</p>
+
+<p>Esse e-mail foi enviado de forma automática e não deve ser respondido. Se deseja entrar em contato conosco sobre esse e-mail procure um dos nossos canais de comunicação.</p>
+
+<p>Atenciosamente,<br/>
+CMA</p>

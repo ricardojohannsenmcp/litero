@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+
+<ui:composition template="_template.xhtml">
+	<ui:define name="conteudo">
+		<h:head>
+			<f:metadata>
+				<f:viewAction action="#{listaCasosMB.listar()}" />
+			</f:metadata>
+			
+		</h:head>
+
+		<h:body>
+
+			<h:form id="formCasos" prependId="false">
+			
+			<b:row style="margin-left:10px;margin-bottom:10px;margin-top:10px;">
+				<b:column span="2">
+					<b:iconAwesome name="copy" size="lg" style="top:-3px;position:relative;"/>
+					<p:spacer width="5px"/>
+					<h:outputText value="Casos"
+						style="font-size:18pt;font-weight:bold;" />
+				</b:column>
+				
+				<b:column span="10">
+						<b:commandButton iconAwesome="plus-circle" value="Novo caso"
+							look="success" style="float:right;"
+							action="#{wizardMB.iniciarCadastro()}" rendered="#{usuarioWeb.parte}" />
+							<b:button iconAwesome="plus-circle" outcome="EditarCaso" value="Novo caso" rendered="#{usuarioWeb.administrador}"
+							look="success" style="float:right;">
+							</b:button>
+					</b:column>
+			</b:row>
+
+				
+				
+				
+				<b:row>
+				<b:column span="3">
+					<b:panel look="primary" title="Filtros" collapsible="false"
+						icon-awesome="align-left">
+						<f:facet name="footer">
+							<b:commandButton value="Pesquisar" look="primary" icon="search" action="#{listaCasosMB.pesquisar()}" update="painel" />
+						</f:facet>
+						<b:panelGrid columns="1" styleClass="ui-noborder">
+							<b:inputText placeholder="Código" value="#{listaCasosMB.casoId}" />
+							
+							<b:selectOneMenu value="#{listaCasosMB.statusSelecionado}" converter="omnifaces.SelectItemsConverter" >
+								<f:selectItem itemLabel="Status" />
+								<f:selectItems value="#{listaCasosMB.status}" var="statusCaso"
+									itemLabel="#{statusCaso.descricao}" itemValue="#{statusCaso}" />
+							</b:selectOneMenu>
+							
+						
+							
+							<b:datepicker lang="pt_BR" id="data_criacao" placeholder="Data criação"
+						value="#{listaCasosMB.dataCriacao}" />
+							
+							<b:inputText placeholder="CPF,CNPJ ou OAB" value="#{listaCasosMB.cpfCnpjOabParticipante}" />
+							
+							<b:inputText placeholder="Participante" value="#{listaCasosMB.nomeParticipante}" />
+						</b:panelGrid>
+					</b:panel>
+				</b:column>
+				<b:column span="9">
+					<p:outputPanel>
+
+						<b:buttonGroup size="sm" >
+							<b:commandButton id="btGrid" icon-awesome="th-large"
+								action="#{listaCasosMB.exibirComoGrid()}" update="painel"
+								process="@this" />
+							<b:commandButton id="btList" icon-awesome="list-ul"
+								action="#{listaCasosMB.exibirComoList()}" update="painel"
+								process="@this" />
+						</b:buttonGroup>
+
+						<p:outputPanel id="painel">
+						
+							<p:dataGrid value="#{listaCasosMB.casos}" var="caso" emptyMessage="Nenhum resultado encontrado"
+								layout="grid" rendered="#{listaCasosMB.grid}">
+
+								<p:panel collapsible="false">
+									<f:facet name="header">
+										<b:link value="Caso ##{caso.casoId}" outcome="Caso">
+											<f:param name="casoId" value="#{caso.casoId}" />
+										</b:link>
+										
+									</f:facet>
+									<f:facet name="footer">
+
+										<b:button tooltip="Valor objeto da demanda: R$ #{caso.valor}" icon="usd"
+											style="margin:2px;" />
+										<b:button tooltip="Requerentes: #{caso.nomesRequerentes} / Requeridos: #{caso.nomesRequeridos}"
+											tooltip-container="" icon-awesome="users" style="margin:2px;" />
+										<b:button tooltip="Objeto: #{caso.descricao}" icon-awesome="file-o" outcome="Caso"
+											style="margin:2px;">
+											<f:param name="casoId" value="#{caso.casoId}" />
+										</b:button>
+
+
+
+									</f:facet>
+
+									<p:panelGrid styleClass="ui-noborder">
+										<b:row>
+
+											<b:column span="12">
+												<b:iconAwesome name="calendar" />
+											<p:spacer width="10px" />
+											<h:outputText value="#{caso.data}" style="font-size:10pt;">
+												<f:convertDateTime pattern="dd/MM/yyyy" />
+											</h:outputText>
+											</b:column>
+										</b:row>
+										<b:row>
+											<b:column width="12">
+												<b:label  value="#{caso.status.descricao}" severity="#{caso.status.severity}" />
+											</b:column>
+											
+										</b:row>
+									</p:panelGrid>
+								</p:panel>
+							</p:dataGrid>
+
+
+
+
+
+							<ui:repeat var="caso" value="#{listaCasosMB.casos}"
+								rendered="#{not listaCasosMB.grid}" >
+
+								<p:panel collapsible="false" style="margin:2px;">
+									<f:facet name="header">
+										<b:link value="Caso ##{caso.casoId}" outcome="Caso">
+											<f:param name="casoId" value="#{caso.casoId}" />
+										</b:link>
+										
+									</f:facet>
+									<b:panelGrid colSpans="4,4,4" style="padding:10px;">
+										<b:row style="padding-right:10px;padding-bottom:10px;">
+											<b:iconAwesome name="calendar" />
+											<p:spacer width="10px" />
+											<h:outputText value="#{caso.data}" style="font-size:10pt;">
+												<f:convertDateTime pattern="dd/MM/yyyy" />
+											</h:outputText>
+
+										</b:row>
+										<b:row style="padding-right:10px;">
+											<b:label  value="#{caso.status.descricao}" severity="#{caso.status.severity}" />
+										</b:row>
+
+										<b:row>
+											<b:iconAwesome name="usd" />
+											<p:spacer width="10px" />
+											<h:outputText value="R$ #{caso.valor}" style="font-size:10pt;" />
+										</b:row>
+
+
+										<b:row style="padding-right:10px;">
+											
+											<div style="text-align:justify;">
+												<b:iconAwesome size="1x" name="file-o" />
+												<p:spacer width="10px" />
+												<h:outputText value="#{caso.descricao}" style="font-size:10pt;" />
+											</div>
+											
+
+										</b:row>
+
+										<b:row style="padding-right:10px;">
+											<b:iconAwesome size="1x" name="users" />
+											<p:spacer width="10px" />
+											<h:outputText value="Requerentes: #{caso.nomesRequerentes}" style="font-size:10pt;" />
+										</b:row>
+										
+										<b:row style="padding-right:10px;">
+											<b:iconAwesome size="1x" name="users" />
+											<p:spacer width="10px" />
+											<h:outputText value="Requeridos: #{caso.nomesRequeridos}" style="font-size:10pt;" />
+										</b:row>
+										
+
+									</b:panelGrid>
+								</p:panel>
+
+							</ui:repeat>
+
+
+						</p:outputPanel>
+
+					</p:outputPanel>
+				</b:column>
+				</b:row>
+				
+				
+				
+				
+			</h:form>
+		</h:body>
+	</ui:define>
+</ui:composition>
+</html>

@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui" xmlns:b="http://bootsfaces.net/ui">
+
+<h:head>
+</h:head>
+<h:body>
+	<ui:composition template="_template.xhtml">
+		<ui:define name="conteudo">
+
+
+			<b:form id="frm_parte" prependId="false">
+
+				<b:row>
+					<b:column span="2">
+					</b:column>
+					<b:column span="8">
+
+						<b:row>
+							<b:column span="12">
+								<b:iconAwesome name="user" size="lg" />
+								<p:spacer width="5px" />
+								<h:outputText value="Cadastro"
+									style="font-size:18pt;font-weight:bold;" />
+							</b:column>
+							
+							<b:column span="12">
+								<h:outputText value="Informe os dados abaixo sobre a parte, caso não saiba exatamente a informação, preencha as informações complementares com o que se sabe." />
+							</b:column>
+							
+						</b:row>
+
+						<p:messages id="messages" autoUpdate="true" />
+						
+						<p:spacer/>
+
+						<b:row>
+							<b:inputText id="nome" medium-screen="12" label="Nome ou apelido"
+								value="#{wizardMB.parteSelecionada.nome}" />
+
+
+
+							<b:inputText id="telefone" medium-screen="6" label="Telefone"
+								value="#{wizardMB.parteSelecionada.telefone}" />
+								
+								<b:inputText id="email" medium-screen="6" label="Email"
+								value="#{wizardMB.parteSelecionada.email}" />
+
+
+
+							<b:inputText id="endereco" medium-screen="12" label="Endereço ou ponto de referência"
+								value="#{wizardMB.parteSelecionada.logradouro}" />
+
+
+
+							<b:inputText id="infoAdicional" medium-screen="12"
+								label="Informações complementares"
+								value="#{wizardMB.parteSelecionada.informacaoAdicional}" />
+
+
+
+
+
+
+
+
+
+							<b:column span="12">
+								<h:outputText value="* campos obrigatórios"
+									style="color:gray;font-style:italic;" />
+
+							</b:column>
+
+
+
+							<b:column span="12">
+								<b:commandButton value="Cancelar" icon-awesome="ban"
+									action="#{wizardMB.cancelarAcao}" immediate="true"
+									look="danger" />
+								<p:spacer />
+								<b:commandButton look="primary" icon-awesome="save"
+									value="Salvar" action="#{wizardMB.salvarParte}" />
+							</b:column>
+						</b:row>
+
+					</b:column>
+					<b:column span="2">
+					</b:column>
+				</b:row>
+
+			</b:form>
+
+		</ui:define>
+	</ui:composition>
+
+</h:body>
+</html>

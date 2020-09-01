@@ -1,0 +1,28 @@
+<!DOCTYPE html> 
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:h="http://java.sun.com/jsf/html"
+       xmlns:b="http://bootsfaces.net/ui"
+       xmlns:p="http://primefaces.org/ui">       
+<h:head>
+</h:head> 
+<h:body> 
+
+
+
+    <b:dataTable id="dt_anexos" value="#{casoMB.anexos}" emptyMessage="" var="mensagem" customLangUrl="#{resource['/json/pt-br.json']}"  
+    info="false"  responsive="true"
+    striped="false"
+      paginated="false" 
+      searching="false">
+    <b:dataTableColumn value="#{mensagem.texto}"  header-style-class='hidden'  style="width:600px" />
+    <b:dataTableColumn header-style-class='hidden' >
+    <a  class="btn btn-primary" href="/camara/file/#{mensagem.anexo}" target="_blank"><i class="fa fa-arrow-circle-down"></i></a>
+    <!--  
+      <b:button  icon="edit" outcome="/camara/file#{anexo.nome}" id="bt-#{anexo.anexoId}"/>
+       -->
+    </b:dataTableColumn>
+   </b:dataTable>
+</h:body> 
+</html>
