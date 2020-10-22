@@ -19,8 +19,5 @@ public class AutenticationService {
 		return usuario;
 		
 	}
-	
-	
-	
 
 }

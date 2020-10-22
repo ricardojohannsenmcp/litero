@@ -6,16 +6,19 @@ import javax.faces.view.ViewScoped;
 import javax.inject.Inject;
 import javax.inject.Named;
 
+import br.com.litero.camara.exceptions.NegocioException;
 import br.com.litero.camara.model.Endereco;
 import br.com.litero.camara.model.EstadoCivil;
 import br.com.litero.camara.model.Pessoa;
 import br.com.litero.camara.model.TipoPessoa;
 import br.com.litero.camara.model.Usuario;
 import br.com.litero.camara.model.UsuarioForm;
+import br.com.litero.camara.repositorios.UsuarioRepository;
 import br.com.litero.camara.security.UsuarioWeb;
 import br.com.litero.camara.service.AutenticationService;
 import br.com.litero.camara.service.CepService;
 import br.com.litero.camara.service.PessoaService;
+import br.com.litero.camara.util.jsf.FacesMessages;
 
 
 
@@ -28,6 +31,10 @@ public class CadastroMB implements Serializable{
 
 	@Inject
 	private PessoaService pessoaService;
+	
+	@Inject
+	private UsuarioRepository usuarioRepository;
+	
 	@Inject
 	private AutenticationService authService;
 	@Inject
@@ -38,6 +45,8 @@ public class CadastroMB implements Serializable{
 	private UsuarioForm usuarioForm;
 
 
+	@Inject
+	private FacesMessages  messages;
 
 
 	public CadastroMB(){
@@ -53,12 +62,23 @@ public class CadastroMB implements Serializable{
 
 
 	public String salvar() {
-		parte = pessoaService.adicionar(parte,usuarioForm);	
-		Usuario usuario = authService.autenticar(usuarioForm.getLogin(), usuarioForm.getSenha());
-		if (usuario != null) {
-			usuarioWeb.loga(usuario);
-			return "/Casos?faces-redirect=true"; 
+		
+		if(usuarioRepository.buscarPorLogin(usuarioForm.getLogin())!=null) {
+			messages.error("O Login digitado já existe.");
 		}
+		else {
+			parte = pessoaService.adicionar(parte,usuarioForm);
+			
+			
+			
+			Usuario usuario = authService.autenticar(usuarioForm.getLogin(), usuarioForm.getSenha());
+			if (usuario != null) {
+				usuarioWeb.loga(usuario);
+				return "/Casos?faces-redirect=true"; 
+			}
+			
+		}
+		
 		return null;
 	}
 
