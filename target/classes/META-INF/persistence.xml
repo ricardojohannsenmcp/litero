@@ -11,6 +11,7 @@ http://java.sun.com/xml/ns/persistence/persistence_2_0.xsd">
 	 <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/rjsisweb_mediacao_db" />
 			<property name="javax.persistence.jdbc.user" value="rjsisweb_admin" />
 			 <property name="javax.persistence.jdbc.password" value="Trincheir@10" />
+			
 			<!-- <property name="javax.persistence.jdbc.url" value="jdbc:mysql://localhost:3306/mediacao_db" />
 			<property name="javax.persistence.jdbc.user" value="root" />
 			<property name="javax.persistence.jdbc.password" value="" />  -->
