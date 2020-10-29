@@ -26,7 +26,7 @@
 				<b:dataTableColumn label="Total" value="#{cobranca.total}" />
 				<b:dataTableColumn label="Situacao"
 					value="#{cobranca.statusCobranca.descricao}" />
-				<b:dataTableColumn label="Boleto">
+				<b:dataTableColumn label="Cobrança">
 					<h:commandLink value="#{cobranca.boleto}">
 						<p:fileDownload
 							value="#{fileDownloadMB.download(cobranca.boleto)}" />

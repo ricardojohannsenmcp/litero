@@ -171,7 +171,7 @@ public class CobrancaMB implements Serializable{
 				messages.error("preencha o valor antes de salvar.");
 			}
 			else if(cobrancaAtual.getBoleto()==null) {
-				messages.error("faça upload do boleto antes de salvar.");
+				messages.error("faça upload da cobrança antes de salvar.");
 			}
 			else {
 				cobrancaRepository.save(cobrancaAtual);
